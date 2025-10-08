@@ -5,8 +5,6 @@ import { useEffect } from "react";
 import { Sky } from 'three/addons/objects/Sky.js';
 import { Water } from 'three/addons/objects/Water.js';
 
-// DEBUG:
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 export default function MainCanvas() {
     useEffect(() => {
@@ -71,24 +69,24 @@ export default function MainCanvas() {
     
             scene.add( cube );
             
-			const pmremGenerator = new THREE.PMREMGenerator( renderer );
-			const sceneEnv = new THREE.Scene();
-
-            let renderTarget;
-
-			sceneEnv.add( sky );
-			renderTarget = pmremGenerator.fromScene( sceneEnv );
-			scene.add( sky );
-
-			scene.environment = renderTarget.texture;
 
 
+			// const pmremGenerator = new THREE.PMREMGenerator( renderer );
+			// const sceneEnv = new THREE.Scene();
+
+			// sceneEnv.add( sky );
+			// const renderTarget = pmremGenerator.fromScene( sceneEnv );
+			// scene.add( sky );
+
+			// scene.environment = renderTarget.texture;
+
+
+            // Position camera
 
             camera.position.y = 2;
             camera.position.z = 5;
 
             // Rendering / Logic
-
 
             addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
