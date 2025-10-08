@@ -31,7 +31,7 @@ export default function MainCanvas() {
             const sky = new Sky();
             sky.scale.setScalar(450000)
 
-            const phi = THREE.MathUtils.degToRad(91);
+            const phi = THREE.MathUtils.degToRad(90);
             const theta = THREE.MathUtils.degToRad(180);
             const sunPosition = new THREE.Vector3().setFromSphericalCoords(1, phi,theta);
 
@@ -58,6 +58,8 @@ export default function MainCanvas() {
 				    fog: scene.fog !== undefined
                 }
             )
+
+            water.material.uniforms['size'].value = 5
             water.rotation.x = - Math.PI / 2;
             scene.add(water);
 
@@ -65,20 +67,20 @@ export default function MainCanvas() {
             const geometry = new THREE.BoxGeometry( 1, 1, 1 );
             const material = new THREE.MeshBasicMaterial( { color: 'rgb(255,255,255)' } );
             const cube = new THREE.Mesh( geometry, material );
-            cube.position.y = 5;
+            cube.position.y = 1;
     
             scene.add( cube );
             
-			// const pmremGenerator = new THREE.PMREMGenerator( renderer );
-			// const sceneEnv = new THREE.Scene();
+			const pmremGenerator = new THREE.PMREMGenerator( renderer );
+			const sceneEnv = new THREE.Scene();
 
-            // let renderTarget;
+            let renderTarget;
 
-			// sceneEnv.add( sky );
-			// renderTarget = pmremGenerator.fromScene( sceneEnv );
-			// scene.add( sky );
+			sceneEnv.add( sky );
+			renderTarget = pmremGenerator.fromScene( sceneEnv );
+			scene.add( sky );
 
-			// scene.environment = renderTarget.texture;
+			scene.environment = renderTarget.texture;
 
 
 
@@ -100,7 +102,7 @@ export default function MainCanvas() {
             }
 
             function render(){
-                water.material.uniforms[ 'time' ].value += 0.25 / 60.0;
+                water.material.uniforms[ 'time' ].value += 0.5 / 60.0;
                 renderer.render(scene, camera)
             }
         }
