@@ -16,7 +16,6 @@ export default function MainCanvas() {
             const renderer = new THREE.WebGLRenderer({canvas: mainCanvas,alpha: true});
             renderer.setSize( window.innerWidth, window.innerHeight );
             
-            
             const geometry = new THREE.BoxGeometry( 1, 1, 1 );
             const material = new THREE.MeshBasicMaterial( { color: 'rgb(255,255,255)' } );
             const cube = new THREE.Mesh( geometry, material );
@@ -25,6 +24,15 @@ export default function MainCanvas() {
             camera.position.z = 5;
 
             renderer.render(scene, camera)
+
+
+            addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix()
+                renderer.setSize(window.innerWidth, window.innerHeight)
+                renderer.render(scene,camera)
+            })
+
         }
         
     }, [])
