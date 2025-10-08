@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { useEffect } from "react";
 
-export default function HeaderCanvas() {
+export default function MainCanvas() {
     useEffect(() => {
         
         const mainCanvas = document.getElementById('mainScene')
@@ -31,8 +31,6 @@ export default function HeaderCanvas() {
     }, [])
 
     return(
-    <canvas id="mainScene" style={{background: 'rgb(21,21,21)', width: '100%' }}>
-
-    </canvas>
+        <canvas id="mainScene" style={{background: 'rgb(21,21,21)', width: '100%' }}></canvas>
     )
 }
