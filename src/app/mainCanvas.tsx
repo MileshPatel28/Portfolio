@@ -23,6 +23,7 @@ export default function MainCanvas() {
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
 			renderer.toneMappingExposure = 0.5;
             renderer.setSize( window.innerWidth, window.innerHeight );
+            renderer.setAnimationLoop(animate)
             
             // Scene specific
 
@@ -40,14 +41,14 @@ export default function MainCanvas() {
 
             // Water plane (credit to Three.JS for water normal textures)
 
-            const waterGeometry = new THREE.PlaneGeometry(1000,1000);
+            const waterGeometry = new THREE.PlaneGeometry(10000,10000);
 
             const water = new Water(
                 waterGeometry,
                 {
                     textureWidth: 512,
                     textureHeight: 512,
-                    waterNormals: new THREE.TextureLoader().load('./waternormals.jpg', function(texture) {
+                    waterNormals: new THREE.TextureLoader().load('/textures/waternormals.jpg', function(texture) {
                         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                     }),
                     sunDirection: new THREE.Vector3(),
@@ -64,25 +65,29 @@ export default function MainCanvas() {
             const geometry = new THREE.BoxGeometry( 1, 1, 1 );
             const material = new THREE.MeshBasicMaterial( { color: 'rgb(255,255,255)' } );
             const cube = new THREE.Mesh( geometry, material );
+            cube.position.y = 5;
     
             scene.add( cube );
             
+			// const pmremGenerator = new THREE.PMREMGenerator( renderer );
+			// const sceneEnv = new THREE.Scene();
+
+            // let renderTarget;
+
+			// sceneEnv.add( sky );
+			// renderTarget = pmremGenerator.fromScene( sceneEnv );
+			// scene.add( sky );
+
+			// scene.environment = renderTarget.texture;
 
 
 
-
-
-            // const controls = new OrbitControls( camera, renderer.domElement );
-			// controls.maxPolarAngle = Math.PI * 0.495;
-			// controls.target.set( 0, 10, 0 );
-			// controls.minDistance = 40.0;
-			// controls.maxDistance = 200.0;
-			// controls.update();
-
-            camera.position.y = 1;
+            camera.position.y = 2;
+            camera.position.z = 5;
 
             // Rendering / Logic
-            renderer.render(scene, camera)
+
+
             addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix()
@@ -90,8 +95,18 @@ export default function MainCanvas() {
                 renderer.render(scene,camera)
             })
 
+            function animate(){
+                render();
+            }
+
+            function render(){
+                water.material.uniforms[ 'time' ].value += 0.25 / 60.0;
+                renderer.render(scene, camera)
+            }
         }
         
+
+
     }, [])
 
     return(
