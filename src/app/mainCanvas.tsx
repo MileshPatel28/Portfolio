@@ -63,7 +63,7 @@ export default function MainCanvas() {
 
 
             const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-            const material = new THREE.MeshBasicMaterial( { color: 'rgb(255,255,255)' } );
+            const material = new THREE.MeshBasicMaterial( { color: 'rgb(255,255,255)' ,transparent: true ,opacity: 0.6} );
             const cube = new THREE.Mesh( geometry, material );
             cube.position.y = 1;
     
