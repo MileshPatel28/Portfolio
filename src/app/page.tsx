@@ -1,6 +1,24 @@
 'use client';
 
+import { useEffect } from "react";
+
 export default function Home() {
+
+
+  useEffect(() => {
+  
+      addEventListener('scroll', (event) => {
+      let scrollY = window.scrollY;
+  
+      const mainCanvas = document.getElementById('mainScene')
+  
+      if(mainCanvas != null){
+        console.log(scrollY);
+
+        mainCanvas.style
+      }
+    })
+  },[])
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
