@@ -69,18 +69,6 @@ export default function MainCanvas() {
     
             scene.add( cube );
             
-
-
-			// const pmremGenerator = new THREE.PMREMGenerator( renderer );
-			// const sceneEnv = new THREE.Scene();
-
-			// sceneEnv.add( sky );
-			// const renderTarget = pmremGenerator.fromScene( sceneEnv );
-			// scene.add( sky );
-
-			// scene.environment = renderTarget.texture;
-
-
             // Position camera
 
             camera.position.y = 3;
@@ -98,7 +86,6 @@ export default function MainCanvas() {
             })
 
             function animate(){
-
                 cube.rotation.x += 0.01;
                 cube.rotation.y += 0.01;
                 cube.rotation.z += 0.01;

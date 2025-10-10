@@ -4,18 +4,19 @@ import { useEffect } from "react";
 
 export default function Home() {
 
-
   useEffect(() => {
-  
-      addEventListener('scroll', (event) => {
-      const scrollY = window.scrollY;
-  
-      const mainCanvas = document.getElementById('mainScene')
-  
-      if(mainCanvas != null){
-        mainCanvas.style.opacity = (1 - scrollY/ document.body.scrollHeight).toString();
-      }
-    })
+
+      addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+    
+        const mainCanvas = document.getElementById('mainScene')
+    
+        if(mainCanvas != null){
+          mainCanvas.style.opacity = (1 - scrollY/ document.body.scrollHeight).toString();
+        }
+
+      })
+
   },[])
 
   return (
