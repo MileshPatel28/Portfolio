@@ -8,14 +8,14 @@ export default function Home() {
   useEffect(() => {
   
       addEventListener('scroll', (event) => {
-      let scrollY = window.scrollY;
+      const scrollY = window.scrollY;
   
       const mainCanvas = document.getElementById('mainScene')
   
       if(mainCanvas != null){
         console.log(scrollY);
 
-        mainCanvas.style
+        mainCanvas.style.opacity = (1 - scrollY/10000).toString();
       }
     })
   },[])
