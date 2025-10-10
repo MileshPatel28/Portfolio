@@ -13,9 +13,7 @@ export default function Home() {
       const mainCanvas = document.getElementById('mainScene')
   
       if(mainCanvas != null){
-        console.log(scrollY);
-
-        mainCanvas.style.opacity = (1 - scrollY/10000).toString();
+        mainCanvas.style.opacity = (1 - scrollY/ document.body.scrollHeight).toString();
       }
     })
   },[])
