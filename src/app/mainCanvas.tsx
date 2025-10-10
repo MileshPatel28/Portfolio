@@ -83,8 +83,10 @@ export default function MainCanvas() {
 
             // Position camera
 
-            camera.position.y = 2;
+            camera.position.y = 3;
             camera.position.z = 5;
+
+            camera.rotation.x = -0.2;
 
             // Rendering / Logic
 
