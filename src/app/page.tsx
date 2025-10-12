@@ -9,11 +9,11 @@ export default function Home() {
       addEventListener('scroll', () => {
         const scrollY = window.scrollY;
     
-        const mainCanvas = document.getElementById('mainScene')
+        // const mainCanvas = document.getElementById('mainScene')
     
-        if(mainCanvas != null){
-          mainCanvas.style.opacity = (1 - scrollY/ document.body.scrollHeight).toString();
-        }
+        // if(mainCanvas != null){
+        //   mainCanvas.style.opacity = (1 - scrollY/ document.body.scrollHeight).toString();
+        // }
 
       })
 

@@ -9,6 +9,7 @@ import { Water } from 'three/addons/objects/Water.js';
 export default function MainCanvas() {
     useEffect(() => {
         
+        
         const mainCanvas = document.getElementById('mainScene')
 
         if(mainCanvas != null){
@@ -29,7 +30,7 @@ export default function MainCanvas() {
             const sky = new Sky();
             sky.scale.setScalar(450000)
 
-            const phi = THREE.MathUtils.degToRad(90);
+            const phi = THREE.MathUtils.degToRad(91);
             const theta = THREE.MathUtils.degToRad(180);
             const sunPosition = new THREE.Vector3().setFromSphericalCoords(1, phi,theta);
 
@@ -78,12 +79,18 @@ export default function MainCanvas() {
 
             // Rendering / Logic
 
-            addEventListener('resize', () => {
+            
+
+            function onResize(){
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix()
                 renderer.setSize(window.innerWidth, window.innerHeight)
                 renderer.render(scene,camera)
-            })
+            }
+
+            function onScroll(){
+                camera.position.z = scrollY / document.body.scrollHeight * 10
+            }
 
             function animate(){
                 cube.rotation.x += 0.01;
@@ -97,6 +104,9 @@ export default function MainCanvas() {
                 water.material.uniforms[ 'time' ].value += 0.5 / 60.0;
                 renderer.render(scene, camera)
             }
+
+            addEventListener('resize',onResize)
+            addEventListener('scroll',onScroll)
         }
         
 
