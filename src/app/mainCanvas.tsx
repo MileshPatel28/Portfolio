@@ -88,14 +88,13 @@ export default function MainCanvas() {
                 renderer.render(scene,camera)
             }
 
-            function onScroll(){
-                camera.position.z = scrollY / document.body.scrollHeight * 10
-            }
 
             function animate(){
                 cube.rotation.x += 0.01;
                 cube.rotation.y += 0.01;
                 cube.rotation.z += 0.01;
+                camera.position.z = scrollY / document.body.scrollHeight * 30 + 5
+
 
                 render();
             }
@@ -106,7 +105,6 @@ export default function MainCanvas() {
             }
 
             addEventListener('resize',onResize)
-            addEventListener('scroll',onScroll)
         }
         
 
