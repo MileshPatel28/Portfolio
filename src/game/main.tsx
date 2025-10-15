@@ -3,16 +3,19 @@
 import { Sky } from 'three/addons/objects/Sky.js';
 import { Water } from 'three/addons/objects/Water.js';
 import * as THREE from 'three';
-import { deprecate } from 'util';
+import { useEffect, useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 
 let scene: THREE.Scene
 let renderer: THREE.WebGLRenderer
-let mainCanvas;
+let mainCanvas : HTMLCanvasElement;
 
+const cameraY = {y : 5}
 
 export function gemFinderGameMain() {
 
-    mainCanvas = document.getElementById('mainScene')
+    mainCanvas = document.getElementById('mainScene') as HTMLCanvasElement
 
     if (mainCanvas != null) {
 
@@ -37,6 +40,7 @@ export function gemFinderGameMain() {
         const sunPosition = new THREE.Vector3().setFromSphericalCoords(1, phi, theta);
 
         sky.material.uniforms.sunPosition.value = sunPosition;
+        
 
         scene.add(sky)
 
@@ -89,11 +93,29 @@ export function gemFinderGameMain() {
             renderer.render(scene, camera)
         }
 
+        function onScroll(){
+            const targetY = 2 - (scrollY / document.body.scrollHeight) * 64;
+            const targetTransparency = (1 - (scrollY / document.body.scrollHeight) * 40)
+
+            gsap.to(cameraY,{
+                y: targetY,
+                duration: 1.5,
+                ease: 'power2.out'
+            })
+            
+            gsap.to(mainCanvas,{
+                opacity: targetTransparency,
+                duration: 1.5,
+                ease: 'power2.out'
+            })
+
+        }
+
 
         function animate() {
 
-            camera.position.y = 2 - scrollY/document.body.scrollHeight*8
-
+            camera.position.y = cameraY.y
+            // camera.position.y = 2 - scrollY/document.body.scrollHeight*8
             render();
         }
 
@@ -103,6 +125,7 @@ export function gemFinderGameMain() {
         }
 
         addEventListener('resize', onResize)
+        addEventListener('scroll',onScroll)
     }
 }
 
