@@ -3,6 +3,7 @@
 import { Sky } from 'three/addons/objects/Sky.js';
 import { Water } from 'three/addons/objects/Water.js';
 import * as THREE from 'three';
+import { deprecate } from 'util';
 
 let scene: THREE.Scene
 let renderer: THREE.WebGLRenderer
@@ -64,23 +65,18 @@ export function gemFinderGameMain() {
         scene.add(water);
 
 
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshBasicMaterial({ color: 'rgb(255,255,255)', transparent: true, opacity: 0.6 });
-        const cube = new THREE.Mesh(geometry, material);
-        cube.position.y = 1;
 
-        scene.add(cube);
 
         // Generate mountains
 
-        generateMap();
 
         // Position camera
 
-        camera.position.y = 10;
-        camera.position.z = 10;
+        camera.position.y = 2;
+        camera.position.z = 0;
 
-        camera.rotation.x = -0.5;
+        camera.rotation.x = 0;
+        camera.rotation.y = 0.5;
 
         // Rendering / Logic
 
@@ -95,10 +91,8 @@ export function gemFinderGameMain() {
 
 
         function animate() {
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
-            cube.rotation.z += 0.01;
 
+            camera.position.y = 2 - scrollY/document.body.scrollHeight*8
 
             render();
         }
@@ -126,7 +120,7 @@ function generateMap() {
 
     for (let x = start; x < end; x++ ) {
         for (let z = start; z < end; z++) {
-            const randomY = Math.random() * 5 - 2.5;
+            const randomY = Math.random() * 5 - 3.5;
 
             vertexTmp.push(x, randomY, z);
             vertexVectors.push(new THREE.Vector3(x,randomY,z))

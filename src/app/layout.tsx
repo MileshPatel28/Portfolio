@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en" >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        style={{height: '10000px'}} // Adjust this as need be
+        style={{height: '10000px',}} // Adjust this as need be
       >
         <MainCanvas/>    
         {children}

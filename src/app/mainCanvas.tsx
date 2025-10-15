@@ -15,7 +15,8 @@ export default function MainCanvas() {
         style={{
             margin: '0 !important',
             padding: '0 !important',
-            position: 'fixed'
+            position: 'fixed',
+            zIndex: '-10'
         }}
         />
     )
