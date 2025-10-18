@@ -56,13 +56,13 @@ export function gemFinderGameMain() {
         // Instantiate a loader
         const loader = new GLTFLoader();
 
-        let model;
+        let modelDBUp;
         loader.load(
             'models/DatabaseHaftUp.gltf',
             function ( gltf ) {
-                model = gltf;
-                model.scene.position.y += 2;
-                scene.add( model.scene );
+                modelDBUp = gltf;
+                modelDBUp.scene.position.y += 2;
+                scene.add( modelDBUp.scene );
             },
             function ( xhr ) {
                 console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
@@ -72,11 +72,32 @@ export function gemFinderGameMain() {
             }
         );
 
+        let modelDBDown;
+        loader.load(
+            'models/DatabaseHaftDown.gltf',
+            function ( gltf ) {
+                modelDBDown = gltf;
+                modelDBDown.scene.position.y += 2;
+                scene.add( modelDBDown.scene );
+            },
+            function ( xhr ) {
+                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            },
+            function ( error ) {
+                console.log( 'An error happened' );
+            }
+        );
+
+
+
+
 		const scenePass = pass( scene, camera );
 		scenePass.setMRT( mrt( {
 			output,
 			emissive
 		} ) );
+
+        
 		const outputPass = scenePass.getTextureNode();
 		const emissivePass = scenePass.getTextureNode( 'emissive' );
 		const bloomPass = bloom( emissivePass, 0.25, .5 );
@@ -123,8 +144,8 @@ export function gemFinderGameMain() {
         function animate() {
             camera.position.y = cameraY.y
 
-            // if(model){
-            //     model.scene.position.y += 0.01;
+            // if(modelDBUp){
+            //     modelDBUp.scene.position.y += 0.01;
             // }
 
             render();
