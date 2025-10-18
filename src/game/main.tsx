@@ -18,7 +18,7 @@ let scene: THREE.Scene
 let renderer: THREE.WebGPURenderer
 let mainCanvas: HTMLCanvasElement;
 
-let postProcessing;
+let postProcessing : THREE.PostProcessing;
 
 const cameraY = { y: 2 }
 
