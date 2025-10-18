@@ -9,9 +9,6 @@ export default function Home() {
       Dream big, acheive bigger
       </div>
 
-      {/* <div>
-        Who am I?
-      </div> */}
     </div>
   );
 }

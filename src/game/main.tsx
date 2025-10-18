@@ -2,16 +2,25 @@
 
 import { Sky } from 'three/addons/objects/Sky.js';
 import { Water } from 'three/addons/objects/Water.js';
-import * as THREE from 'three';
+// import * as THREE from 'three';
+import * as THREE from 'three/webgpu';
+// import * as THREEGPU from 'three/webgpu';
 import gsap from 'gsap';
+import { GLTF, GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { color, mod } from 'three/tsl';
+import { DRACOLoader } from 'three/examples/jsm/Addons.js';
+import { Scene } from 'three/src/Three.WebGPU.Nodes.js';
+import { pass, mrt, output, emissive } from 'three/tsl';
+import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 
 let scene: THREE.Scene
-let scenePageBody: THREE.Scene
 
-let renderer: THREE.WebGLRenderer
+let renderer: THREE.WebGPURenderer
 let mainCanvas: HTMLCanvasElement;
 
-const cameraY = { y: 5 }
+let postProcessing;
+
+const cameraY = { y: 2 }
 
 export function gemFinderGameMain() {
 
@@ -23,77 +32,64 @@ export function gemFinderGameMain() {
         scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-        renderer = new THREE.WebGLRenderer({ canvas: mainCanvas, alpha: true });
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 0.2;
+
+        renderer = new THREE.WebGPURenderer({ canvas: mainCanvas, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.toneMappingExposure = 0.2;
         renderer.setAnimationLoop(animate)
+
+        scene.background = new THREE.Color('rgb(21,21,21)')
 
         // Scene specific
 
-        // Sky
-        const sky = new Sky();
-        sky.scale.setScalar(450000)
-
-        const phi = THREE.MathUtils.degToRad(91);
-        const theta = THREE.MathUtils.degToRad(180);
-        const sunPosition = new THREE.Vector3().setFromSphericalCoords(1, phi, theta);
-
-        sky.material.blendColor = new THREE.Color().setRGB(0, 0, 1)
-        sky.material.uniforms.sunPosition.value = sunPosition;
-
-
-        scene.add(sky)
-
-        // Water plane (credit to Three.JS for water normal textures)
-
-        const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
-
-        const water = new Water(
-            waterGeometry,
-            {
-                textureWidth: 512,
-                textureHeight: 512,
-                waterNormals: new THREE.TextureLoader().load('/textures/waternormals.jpg', function (texture) {
-                    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                }),
-                sunDirection: new THREE.Vector3(),
-                sunColor: 0xffffff,
-                waterColor: 0x001e0f,
-                distortionScale: 0.5,
-                fog: scene.fog !== undefined
-            }
-        )
-
-        water.material.uniforms['size'].value = 5
-        water.rotation.x = - Math.PI / 2;
-        scene.add(water);
-
-
-
-        const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-        const cubeMat = new THREE.MeshBasicMaterial({ color: 'rgba(35, 150, 232, 1)' })
-        const cube = new THREE.Mesh(cubeGeometry, cubeMat)
-
-        cube.position.y = -5;
-        cube.position.x = -3;
-        cube.position.z = -3;
+        const cubeGeometry = new THREE.BoxGeometry(1,1,1);
+        const cubeMaterial = new THREE.MeshBasicMaterial({color: 'rgba(146, 146, 146, 1)'})
+        const cube = new THREE.Mesh(cubeGeometry,cubeMaterial)
 
         scene.add(cube)
 
+        // const light = new THREE.PointLight( 'rgba(96, 168, 255, 1)', 200, 100 );
+        // light.position.set( 0, 2, 3 );
+        // scene.add( light );
+
+
+        // Instantiate a loader
+        const loader = new GLTFLoader();
+
+        let model;
+        loader.load(
+            'models/DatabaseHaftUp.gltf',
+            function ( gltf ) {
+                model = gltf;
+                model.scene.position.y += 2;
+                scene.add( model.scene );
+            },
+            function ( xhr ) {
+                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            },
+            function ( error ) {
+                console.log( 'An error happened' );
+            }
+        );
+
+		const scenePass = pass( scene, camera );
+		scenePass.setMRT( mrt( {
+			output,
+			emissive
+		} ) );
+		const outputPass = scenePass.getTextureNode();
+		const emissivePass = scenePass.getTextureNode( 'emissive' );
+		const bloomPass = bloom( emissivePass, 0.25, .5 );
+		postProcessing = new THREE.PostProcessing( renderer );
+		postProcessing.outputNode = outputPass.add( bloomPass );       
 
 
         // Position camera
 
-        camera.position.y = 2;
-        camera.position.z = 0;
-
-        camera.rotation.x = 0;
-        camera.rotation.y = 0.5;
+        camera.position.y = cameraY.y;
+        camera.position.z = 5;
 
         // Rendering / Logic
-
-
 
         function onResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -106,8 +102,6 @@ export function gemFinderGameMain() {
             const targetY = 2 - (scrollY / document.body.scrollHeight) * 32 ;
             const targetOpacity = Math.abs((1 - (scrollY / document.body.scrollHeight) * 20))
 
-            // console.log(scrollY)
-            console.log(targetOpacity);
 
             // Swap scenes
 
@@ -127,15 +121,18 @@ export function gemFinderGameMain() {
 
 
         function animate() {
-
             camera.position.y = cameraY.y
-            // camera.position.y = 2 - scrollY/document.body.scrollHeight*8
+
+            // if(model){
+            //     model.scene.position.y += 0.01;
+            // }
+
             render();
         }
 
         function render() {
-            water.material.uniforms['time'].value += 0.5 / 60.0;
-            renderer.render(scene, camera)
+            // renderer.render(scene, camera)
+            postProcessing.render();
         }
 
         addEventListener('resize', onResize)
