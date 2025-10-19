@@ -49,7 +49,11 @@ export function gemFinderGameMain() {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 
-        renderer = new THREE.WebGPURenderer({ canvas: mainCanvas, alpha: true });
+        renderer = new THREE.WebGPURenderer({ 
+            canvas: mainCanvas, 
+            alpha: true,
+            antialias: true
+        });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.toneMappingExposure = 0.2;
         renderer.setAnimationLoop(animate)
@@ -58,16 +62,59 @@ export function gemFinderGameMain() {
 
         // Scene specific
 
-        // const cubeGeometry = new THREE.BoxGeometry(20, 1, 8);
-        // const cubeMaterial = new THREE.MeshBasicMaterial({ color: 'rgba(26, 26, 26, 1)' })
-        // const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
+        fontLoader.load( '/fonts/JetBrainsMonoThin_Regular.json', function ( font ) {
+            
+            const fontMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)'})
+            const headerFontSize = 0.4;
 
-        // scene.add(cube)
+            const headerTopGeometry = new TextGeometry( 'Dream big..', {
+                font: font,
+                size: headerFontSize, 
+                depth: 0,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.01,
+                bevelSize: 0.005,
+                bevelOffset: 0,
+                bevelSegments: 3,
+            } );
 
-        // const light = new THREE.PointLight( 'rgba(96, 168, 255, 1)', 200, 100 );
-        // light.position.set( 0, 2, 3 );
-        // scene.add( light );
+            headerTopGeometry.computeBoundingBox();
+            const centerTop = headerTopGeometry.boundingBox.getCenter(new THREE.Vector3());
 
+            const headerBottomGeometry = new TextGeometry( 'Acheive bigger..', {
+                font: font,
+                size: headerFontSize, 
+                depth: 0,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.01,
+                bevelSize: 0.005,
+                bevelOffset: 0,
+                bevelSegments: 3,
+            } );
+
+            headerBottomGeometry.computeBoundingBox();
+            const centerBottom = headerBottomGeometry.boundingBox.getCenter(new THREE.Vector3());
+
+
+
+
+            const meshTop = new THREE.Mesh(headerTopGeometry,fontMat)
+            meshTop.position.x = -centerTop.x;
+            meshTop.position.y = 3.8;
+            meshTop.position.z = 1;
+
+            const meshBottom = new THREE.Mesh(headerBottomGeometry,fontMat)
+            meshBottom.position.x = -centerBottom.x;
+            meshBottom.position.y = 0;
+            meshBottom.position.z = 1;
+
+
+            scene.add(meshTop);
+            scene.add(meshBottom)
+
+        } );
 
         // Instantiate a gltfLoader
 
@@ -138,6 +185,7 @@ export function gemFinderGameMain() {
         function onResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix()
+            renderer.setPixelRatio(window.devicePixelRatio)
             renderer.setSize(window.innerWidth, window.innerHeight)
             renderer.render(scene, camera)
         }
@@ -199,6 +247,10 @@ export function gemFinderGameMain() {
                 modelDBDown.scene.rotation.x = dbDownTransforms.rX;
                 modelDBDown.scene.rotation.y = dbDownTransforms.rY;
             }
+
+
+
+            const deltaCamera = Math.min(1, (smoothScroll.y / (totalScroll * 0.1)))
 
             render();
         }
