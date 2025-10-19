@@ -20,6 +20,7 @@ let mainCanvas: HTMLCanvasElement;
 
 let postProcessing: THREE.PostProcessing;
 
+let needRender = true;
 
 const cameraY = { y: 2 }
 
@@ -61,6 +62,10 @@ export function gemFinderGameMain() {
 
         // Instantiate a loader
         const loader = new GLTFLoader();
+
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath( '/examples/jsm/libs/draco/' );
+        loader.setDRACOLoader( dracoLoader );
 
         let modelDBUp;
         loader.load(
@@ -118,7 +123,16 @@ export function gemFinderGameMain() {
 
         // Rendering / Logic
 
+        mainCanvas.style.opacity = '0';
+        gsap.to(mainCanvas, {
+            opacity: 1,
+            duration: 2,
+            ease: 'expo.inOut',
+        })
+
         function onResize() {
+            needRender = true;
+
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix()
             renderer.setSize(window.innerWidth, window.innerHeight)
@@ -126,10 +140,22 @@ export function gemFinderGameMain() {
         }
 
         function onScroll() {
+            needRender = true;
             const targetY = 2 - (scrollY / totalScroll) * 32;
             const targetOpacity = Math.abs((1 - (scrollY / totalScroll) * 20))
 
-            const deltaDBCompletion = Math.min(1, (scrollY / (totalScroll * 0.1)))
+            // const deltaDBCompletion = Math.min(1, (scrollY / (totalScroll * 0.1)))
+
+            // dbUpTransforms.pX = -1.5 * deltaDBCompletion
+            // dbUpTransforms.pY = 2 + .3 * deltaDBCompletion
+            // dbUpTransforms.pZ = 0.4 * deltaDBCompletion
+            // dbUpTransforms.rX = 0.4 * deltaDBCompletion
+            // dbUpTransforms.rY = -0.4 * deltaDBCompletion
+
+            // dbDownTransforms.pX = 1.5 * deltaDBCompletion
+            // dbDownTransforms.pZ = 0.4 * deltaDBCompletion
+            // dbDownTransforms.rX = -0.4 * deltaDBCompletion
+            // dbDownTransforms.rY = 0.4 * deltaDBCompletion
 
             // Swap scenes
 
@@ -139,22 +165,8 @@ export function gemFinderGameMain() {
             //     ease: 'power2.out',
             // })
 
-            // gsap.to(mainCanvas, {
-            //     opacity: targetOpacity,
-            //     duration: 0.25,
-            //     ease: 'power2.out',
-            // })
 
-            dbUpTransforms.pX = -1.5 * deltaDBCompletion
-            dbUpTransforms.pY = 2 + .3 * deltaDBCompletion
-            dbUpTransforms.pZ = 0.4 * deltaDBCompletion
-            dbUpTransforms.rX = 0.4 * deltaDBCompletion
-            dbUpTransforms.rY = -0.4 * deltaDBCompletion
 
-            dbDownTransforms.pX = 1.5 * deltaDBCompletion
-            dbDownTransforms.pZ = 0.4 * deltaDBCompletion
-            dbDownTransforms.rX = -0.4 * deltaDBCompletion
-            dbDownTransforms.rY = 0.4 * deltaDBCompletion
 
             // gsap.to(dbUpTransforms,{
             //         pX: -1.5*deltaDBCompletion,
@@ -228,6 +240,18 @@ export function gemFinderGameMain() {
             //     modelDBDown.scene.rotation.y = 0.4;
             // }
 
+            const deltaDBCompletion = Math.min(1, (scrollY / (totalScroll * 0.1)))
+
+            dbUpTransforms.pX = -1.5 * deltaDBCompletion
+            dbUpTransforms.pY = 2 + .3 * deltaDBCompletion
+            dbUpTransforms.pZ = 0.4 * deltaDBCompletion
+            dbUpTransforms.rX = 0.4 * deltaDBCompletion
+            dbUpTransforms.rY = -0.4 * deltaDBCompletion
+
+            dbDownTransforms.pX = 1.5 * deltaDBCompletion
+            dbDownTransforms.pZ = 0.4 * deltaDBCompletion
+            dbDownTransforms.rX = -0.4 * deltaDBCompletion
+            dbDownTransforms.rY = 0.4 * deltaDBCompletion
 
             if (modelDBUp) {
                 modelDBUp.scene.position.x = dbUpTransforms.pX;
@@ -252,7 +276,9 @@ export function gemFinderGameMain() {
 
         function render() {
             // renderer.render(scene, camera)
+            if(!needRender) return;
             postProcessing.render();
+            needRender = false;
         }
 
         addEventListener('resize', onResize)
