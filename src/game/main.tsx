@@ -18,11 +18,17 @@ let scene: THREE.Scene
 let renderer: THREE.WebGPURenderer
 let mainCanvas: HTMLCanvasElement;
 
-let postProcessing : THREE.PostProcessing;
+let postProcessing: THREE.PostProcessing;
+
 
 const cameraY = { y: 2 }
 
+const dbUpTransforms = { pX: 0, pY: 2, pZ: 0, rX: 0, rY: 0 }
+const dbDownTransforms = { pX: 0, pY: 2, pZ: 0, rX: 0, rY: 0 }
+
 export function gemFinderGameMain() {
+
+    const totalScroll = document.body.scrollHeight;
 
     mainCanvas = document.getElementById('mainScene') as HTMLCanvasElement
 
@@ -42,9 +48,9 @@ export function gemFinderGameMain() {
 
         // Scene specific
 
-        const cubeGeometry = new THREE.BoxGeometry(1,1,1);
-        const cubeMaterial = new THREE.MeshBasicMaterial({color: 'rgba(146, 146, 146, 1)'})
-        const cube = new THREE.Mesh(cubeGeometry,cubeMaterial)
+        const cubeGeometry = new THREE.BoxGeometry(20, 1, 8);
+        const cubeMaterial = new THREE.MeshBasicMaterial({ color: 'rgba(26, 26, 26, 1)' })
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
 
         scene.add(cube)
 
@@ -59,50 +65,50 @@ export function gemFinderGameMain() {
         let modelDBUp;
         loader.load(
             'models/DatabaseHaftUp.gltf',
-            function ( gltf ) {
+            function (gltf) {
                 modelDBUp = gltf;
                 modelDBUp.scene.position.y += 2;
-                scene.add( modelDBUp.scene );
+                scene.add(modelDBUp.scene);
             },
-            function ( xhr ) {
-                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            function (xhr) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
-            function ( error ) {
-                console.log( 'An error happened' );
+            function (error) {
+                console.log('An error happened');
             }
         );
 
         let modelDBDown;
         loader.load(
             'models/DatabaseHaftDown.gltf',
-            function ( gltf ) {
+            function (gltf) {
                 modelDBDown = gltf;
                 modelDBDown.scene.position.y += 2;
-                scene.add( modelDBDown.scene );
+                scene.add(modelDBDown.scene);
             },
-            function ( xhr ) {
-                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            function (xhr) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
-            function ( error ) {
-                console.log( 'An error happened' );
+            function (error) {
+                console.log('An error happened');
             }
         );
 
 
 
 
-		const scenePass = pass( scene, camera );
-		scenePass.setMRT( mrt( {
-			output,
-			emissive
-		} ) );
+        const scenePass = pass(scene, camera);
+        scenePass.setMRT(mrt({
+            output,
+            emissive
+        }));
 
-        
-		const outputPass = scenePass.getTextureNode();
-		const emissivePass = scenePass.getTextureNode( 'emissive' );
-		const bloomPass = bloom( emissivePass, 0.25, .5 );
-		postProcessing = new THREE.PostProcessing( renderer );
-		postProcessing.outputNode = outputPass.add( bloomPass );       
+
+        const outputPass = scenePass.getTextureNode();
+        const emissivePass = scenePass.getTextureNode('emissive');
+        const bloomPass = bloom(emissivePass, 0.25, .5);
+        postProcessing = new THREE.PostProcessing(renderer);
+        postProcessing.outputNode = outputPass.add(bloomPass);
 
 
         // Position camera
@@ -120,23 +126,82 @@ export function gemFinderGameMain() {
         }
 
         function onScroll() {
-            const targetY = 2 - (scrollY / document.body.scrollHeight) * 32 ;
-            const targetOpacity = Math.abs((1 - (scrollY / document.body.scrollHeight) * 20))
+            const targetY = 2 - (scrollY / totalScroll) * 32;
+            const targetOpacity = Math.abs((1 - (scrollY / totalScroll) * 20))
 
+            const deltaDBCompletion = Math.min(1, (scrollY / (totalScroll * 0.1)))
 
             // Swap scenes
 
-            gsap.to(cameraY, {
-                y: targetY,
-                duration: 0.25,
-                ease: 'power2.out',
-            })
+            // gsap.to(cameraY, {
+            //     y: targetY,
+            //     duration: 0.25,
+            //     ease: 'power2.out',
+            // })
 
-            gsap.to(mainCanvas, {
-                opacity: targetOpacity,
-                duration: 0.25,
-                ease: 'power2.out',
-            })
+            // gsap.to(mainCanvas, {
+            //     opacity: targetOpacity,
+            //     duration: 0.25,
+            //     ease: 'power2.out',
+            // })
+
+            dbUpTransforms.pX = -1.5 * deltaDBCompletion
+            dbUpTransforms.pY = 2 + .3 * deltaDBCompletion
+            dbUpTransforms.pZ = 0.4 * deltaDBCompletion
+            dbUpTransforms.rX = 0.4 * deltaDBCompletion
+            dbUpTransforms.rY = -0.4 * deltaDBCompletion
+
+            dbDownTransforms.pX = 1.5 * deltaDBCompletion
+            dbDownTransforms.pZ = 0.4 * deltaDBCompletion
+            dbDownTransforms.rX = -0.4 * deltaDBCompletion
+            dbDownTransforms.rY = 0.4 * deltaDBCompletion
+
+            // gsap.to(dbUpTransforms,{
+            //         pX: -1.5*deltaDBCompletion,
+            //         pY: 2 + .3*deltaDBCompletion,
+            //         pZ: 0.4*deltaDBCompletion,
+            //         rX: 0.4*deltaDBCompletion,
+            //         rY: -0.4*deltaDBCompletion
+            // })
+
+            // gsap.to(dbDownTransforms,{
+            //         pX: 1.5*deltaDBCompletion,
+            //         pZ: 0.4*deltaDBCompletion,
+            //         rX: -0.4*deltaDBCompletion,
+            //         rY: 0.4*deltaDBCompletion
+            // })
+
+
+            // gsap.to(modelDBDown.scene.position,{
+            //         x: 1.5*deltaDBCompletion,
+            //         z: 0.4*deltaDBCompletion
+            // })
+            // gsap.to(modelDBDown.scene.rotation,{
+            //     x: -0.4*deltaDBCompletion,
+            //     y: 0.4*deltaDBCompletion
+            // })
+
+
+
+            // // Performance code version:
+            //  if(modelDBUp){
+            //     modelDBUp.scene.position.x = -1.5*deltaDBCompletion;
+            //     modelDBUp.scene.position.y = 2 + 0.3*deltaDBCompletion;
+            //     modelDBUp.scene.position.z = 0.4*deltaDBCompletion;
+
+            //     modelDBUp.scene.rotation.x = 0.4*deltaDBCompletion;
+            //     modelDBUp.scene.rotation.y = -0.4*deltaDBCompletion;
+            // }
+
+            // if(modelDBDown){
+            //     modelDBDown.scene.position.x = 1.5*deltaDBCompletion;
+            //     modelDBDown.scene.position.y = 2;
+            //     modelDBDown.scene.position.z = 0.4*deltaDBCompletion;
+
+            //     modelDBDown.scene.rotation.x = -0.4*deltaDBCompletion;
+            //     modelDBDown.scene.rotation.y = 0.4*deltaDBCompletion;
+            // }
+
 
         }
 
@@ -144,9 +209,43 @@ export function gemFinderGameMain() {
         function animate() {
             camera.position.y = cameraY.y
 
+            // Good end pos
             // if(modelDBUp){
-            //     modelDBUp.scene.position.y += 0.01;
+            //     modelDBUp.scene.position.x = -1.5;
+            //     modelDBUp.scene.position.y = 2.3;
+            //     modelDBUp.scene.position.z = 0.4;
+
+            //     modelDBUp.scene.rotation.x = 0.4;
+            //     modelDBUp.scene.rotation.y = -0.4;
             // }
+
+            // if(modelDBDown){
+            //     modelDBDown.scene.position.x = 1.5;
+            //     modelDBDown.scene.position.y = 2;
+            //     modelDBDown.scene.position.z = 0.4;
+
+            //     modelDBDown.scene.rotation.x = -0.4;
+            //     modelDBDown.scene.rotation.y = 0.4;
+            // }
+
+
+            if (modelDBUp) {
+                modelDBUp.scene.position.x = dbUpTransforms.pX;
+                modelDBUp.scene.position.y = dbUpTransforms.pY;
+                modelDBUp.scene.position.z = dbUpTransforms.pZ;
+
+                modelDBUp.scene.rotation.x = dbUpTransforms.rX;
+                modelDBUp.scene.rotation.y = dbUpTransforms.rY;
+            }
+
+            if (modelDBDown) {
+                modelDBDown.scene.position.x = dbDownTransforms.pX;
+                modelDBDown.scene.position.y = 2;
+                modelDBDown.scene.position.z = dbDownTransforms.pZ;
+
+                modelDBDown.scene.rotation.x = dbDownTransforms.rX;
+                modelDBDown.scene.rotation.y = dbDownTransforms.rY;
+            }
 
             render();
         }
