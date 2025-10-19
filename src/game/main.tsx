@@ -49,11 +49,11 @@ export function gemFinderGameMain() {
 
         // Scene specific
 
-        const cubeGeometry = new THREE.BoxGeometry(20, 1, 8);
-        const cubeMaterial = new THREE.MeshBasicMaterial({ color: 'rgba(26, 26, 26, 1)' })
-        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
+        // const cubeGeometry = new THREE.BoxGeometry(20, 1, 8);
+        // const cubeMaterial = new THREE.MeshBasicMaterial({ color: 'rgba(26, 26, 26, 1)' })
+        // const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
 
-        scene.add(cube)
+        // scene.add(cube)
 
         // const light = new THREE.PointLight( 'rgba(96, 168, 255, 1)', 200, 100 );
         // light.position.set( 0, 2, 3 );
@@ -67,7 +67,7 @@ export function gemFinderGameMain() {
         dracoLoader.setDecoderPath( '/examples/jsm/libs/draco/' );
         loader.setDRACOLoader( dracoLoader );
 
-        let modelDBUp;
+        let modelDBUp : GLTF;
         loader.load(
             'models/DatabaseHaftUp.gltf',
             function (gltf) {
@@ -83,7 +83,7 @@ export function gemFinderGameMain() {
             }
         );
 
-        let modelDBDown;
+        let modelDBDown : GLTF;
         loader.load(
             'models/DatabaseHaftDown.gltf',
             function (gltf) {
