@@ -65,7 +65,7 @@ export function canvasMain() {
 
         let tbaMesh : THREE.Mesh;
 
-        fontLoader.load( '/fonts/JetBrainsMonoThin_Regular.json', function ( font ) {
+        fontLoader.load( 'fonts/JetBrainsMonoThin_Regular.json', function ( font ) {
             
             const fontMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)'})
             const fontTBAMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)', transparent: true})
@@ -282,8 +282,14 @@ export function canvasMain() {
             const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1)))
             const deltaTBAOpacity = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1.5)))
 
-            // @ts-expect-error It does not recognize the mesh basic material
-            tbaMesh.material.opacity = deltaTBAOpacity;
+            if (tbaMesh) {
+                const mat = tbaMesh.material;
+                if (Array.isArray(mat)) {
+                    (mat[0] as THREE.MeshBasicMaterial).opacity = deltaTBAOpacity;
+                } else {
+                    (mat as THREE.MeshBasicMaterial).opacity = deltaTBAOpacity;
+                }
+            }
             camera.position.z = 5 - 5*deltaCamera;
 
 
