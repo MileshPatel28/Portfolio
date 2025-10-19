@@ -63,12 +63,12 @@ export function canvasMain() {
 
         // Scene specific
 
-        let tbaMesh : THREE.Mesh;
+        let whoAmIMesh : THREE.Mesh;
 
         fontLoader.load( 'fonts/JetBrainsMonoThin_Regular.json', function ( font ) {
             
             const fontMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)'})
-            const fontTBAMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)', transparent: true})
+            const fontWhoAmIMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)', transparent: true})
             const headerFontSize = 0.4;
 
             const headerTopGeometry = new TextGeometry( 'Dream big..', {
@@ -119,9 +119,9 @@ export function canvasMain() {
             scene.add(meshBottom)
 
 
-            // TBA 
+            // Who am I? 
 
-            const tbaGeometry = new TextGeometry( 'TBA..', {
+            const whoAmIGeometry = new TextGeometry( 'Who am I?', {
                 font: font,
                 size: headerFontSize, 
                 depth: 0,
@@ -133,15 +133,15 @@ export function canvasMain() {
                 bevelSegments: 3,
             } );
 
-            tbaGeometry.computeBoundingBox();
-            const tbaCenter = tbaGeometry.boundingBox?.getCenter(new THREE.Vector3())
-            tbaMesh = new THREE.Mesh(tbaGeometry,fontTBAMat)
+            whoAmIGeometry.computeBoundingBox();
+            const whoAmICenter = whoAmIGeometry.boundingBox?.getCenter(new THREE.Vector3())
+            whoAmIMesh = new THREE.Mesh(whoAmIGeometry,fontWhoAmIMat)
 
-            tbaMesh.position.y = 2
-            tbaMesh.position.z = -5
-            if(tbaCenter) tbaMesh.position.x -= tbaCenter.x;
+            whoAmIMesh.position.y = 2
+            whoAmIMesh.position.z = -5
+            if(whoAmICenter) whoAmIMesh.position.x -= whoAmICenter.x;
 
-            scene.add(tbaMesh)
+            scene.add(whoAmIMesh)
 
         } );
 
@@ -296,8 +296,8 @@ export function canvasMain() {
             const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
             const deltaTBAOpacity = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1.5)))
 
-            if (tbaMesh) {
-                const mat = tbaMesh.material;
+            if (whoAmIMesh) {
+                const mat = whoAmIMesh.material;
                 if (Array.isArray(mat)) {
                     (mat[0] as THREE.MeshBasicMaterial).opacity = deltaTBAOpacity;
                 } else {
