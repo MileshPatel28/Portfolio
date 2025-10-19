@@ -3,9 +3,10 @@
 import * as THREE from 'three/webgpu';
 import gsap from 'gsap';
 import { GLTF, GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'three/examples/jsm/Addons.js';
+import { DRACOLoader, FontLoader } from 'three/examples/jsm/Addons.js';
 import { pass, mrt, output, emissive } from 'three/tsl';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 let scene: THREE.Scene
 
@@ -14,11 +15,10 @@ let mainCanvas: HTMLCanvasElement;
 
 let postProcessing: THREE.PostProcessing;
 
-let needRender = true;
 
 const smoothScroll = {y: 0}
 const scrollTo = gsap.quickTo(smoothScroll, "y", {
-  duration: 5,
+  duration: 1,
   ease: "power3.out"
 });
 
@@ -36,6 +36,13 @@ export function gemFinderGameMain() {
     mainCanvas = document.getElementById('mainScene') as HTMLCanvasElement
 
     if (mainCanvas != null) {
+        const gltfLoader = new GLTFLoader();
+
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath( '/examples/jsm/libs/draco/' );
+        gltfLoader.setDRACOLoader( dracoLoader );
+
+        const fontLoader = new FontLoader();
 
         // Initializer
         scene = new THREE.Scene();
@@ -62,15 +69,11 @@ export function gemFinderGameMain() {
         // scene.add( light );
 
 
-        // Instantiate a loader
-        const loader = new GLTFLoader();
+        // Instantiate a gltfLoader
 
-        const dracoLoader = new DRACOLoader();
-        dracoLoader.setDecoderPath( '/examples/jsm/libs/draco/' );
-        loader.setDRACOLoader( dracoLoader );
 
         let modelDBUp : GLTF;
-        loader.load(
+        gltfLoader.load(
             'models/DatabaseHaftUp.gltf',
             function (gltf) {
                 modelDBUp = gltf;
@@ -86,7 +89,7 @@ export function gemFinderGameMain() {
         );
 
         let modelDBDown : GLTF;
-        loader.load(
+        gltfLoader.load(
             'models/DatabaseHaftDown.gltf',
             function (gltf) {
                 modelDBDown = gltf;
@@ -133,8 +136,6 @@ export function gemFinderGameMain() {
         })
 
         function onResize() {
-            needRender = true;
-
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix()
             renderer.setSize(window.innerWidth, window.innerHeight)
@@ -142,83 +143,7 @@ export function gemFinderGameMain() {
         }
 
         function onScroll() {
-            needRender = true;
-            const targetY = 2 - (scrollY / totalScroll) * 32;
-            const targetOpacity = Math.abs((1 - (scrollY / totalScroll) * 20))
-
-            // const deltaDBCompletion = Math.min(1, (scrollY / (totalScroll * 0.1)))
-
-            // dbUpTransforms.pX = -1.5 * deltaDBCompletion
-            // dbUpTransforms.pY = 2 + .3 * deltaDBCompletion
-            // dbUpTransforms.pZ = 0.4 * deltaDBCompletion
-            // dbUpTransforms.rX = 0.4 * deltaDBCompletion
-            // dbUpTransforms.rY = -0.4 * deltaDBCompletion
-
-            // dbDownTransforms.pX = 1.5 * deltaDBCompletion
-            // dbDownTransforms.pZ = 0.4 * deltaDBCompletion
-            // dbDownTransforms.rX = -0.4 * deltaDBCompletion
-            // dbDownTransforms.rY = 0.4 * deltaDBCompletion
-
-            // Swap scenes
-
-            // gsap.to(cameraY, {
-            //     y: targetY,
-            //     duration: 0.25,
-            //     ease: 'power2.out',
-            // })
-
-
             scrollTo(window.scrollY);
-
-
-
-            // gsap.to(dbUpTransforms,{
-            //         pX: -1.5*deltaDBCompletion,
-            //         pY: 2 + .3*deltaDBCompletion,
-            //         pZ: 0.4*deltaDBCompletion,
-            //         rX: 0.4*deltaDBCompletion,
-            //         rY: -0.4*deltaDBCompletion
-            // })
-
-            // gsap.to(dbDownTransforms,{
-            //         pX: 1.5*deltaDBCompletion,
-            //         pZ: 0.4*deltaDBCompletion,
-            //         rX: -0.4*deltaDBCompletion,
-            //         rY: 0.4*deltaDBCompletion
-            // })
-
-
-            // gsap.to(modelDBDown.scene.position,{
-            //         x: 1.5*deltaDBCompletion,
-            //         z: 0.4*deltaDBCompletion
-            // })
-            // gsap.to(modelDBDown.scene.rotation,{
-            //     x: -0.4*deltaDBCompletion,
-            //     y: 0.4*deltaDBCompletion
-            // })
-
-
-
-            // // Performance code version:
-            //  if(modelDBUp){
-            //     modelDBUp.scene.position.x = -1.5*deltaDBCompletion;
-            //     modelDBUp.scene.position.y = 2 + 0.3*deltaDBCompletion;
-            //     modelDBUp.scene.position.z = 0.4*deltaDBCompletion;
-
-            //     modelDBUp.scene.rotation.x = 0.4*deltaDBCompletion;
-            //     modelDBUp.scene.rotation.y = -0.4*deltaDBCompletion;
-            // }
-
-            // if(modelDBDown){
-            //     modelDBDown.scene.position.x = 1.5*deltaDBCompletion;
-            //     modelDBDown.scene.position.y = 2;
-            //     modelDBDown.scene.position.z = 0.4*deltaDBCompletion;
-
-            //     modelDBDown.scene.rotation.x = -0.4*deltaDBCompletion;
-            //     modelDBDown.scene.rotation.y = 0.4*deltaDBCompletion;
-            // }
-
-
         }
 
 
@@ -279,7 +204,6 @@ export function gemFinderGameMain() {
         }
 
         function render() {
-            // renderer.render(scene, camera)
             postProcessing.render();
         }
 
