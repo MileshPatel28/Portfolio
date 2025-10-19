@@ -223,6 +223,20 @@ export function canvasMain() {
             scrollTo(window.scrollY);
         }
 
+        function onMouseMove(event: MouseEvent){
+            if(event){
+                const movementConstant = 0.125;
+
+                const deltaX = ((event.clientX / window.innerWidth) - 0.5) * movementConstant;
+                const deltaY = -((event.clientY / window.innerWidth) - 0.5) * movementConstant;
+
+                if(camera.position.z == 5){
+                    camera.lookAt(new THREE.Vector3(deltaX,2 + deltaY,0));
+                }
+
+            }
+        }
+
 
         function animate() {
             camera.position.y = cameraY.y
@@ -279,7 +293,7 @@ export function canvasMain() {
 
 
 
-            const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1)))
+            const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
             const deltaTBAOpacity = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1.5)))
 
             if (tbaMesh) {
@@ -303,6 +317,7 @@ export function canvasMain() {
 
         addEventListener('resize', onResize)
         addEventListener('scroll', onScroll)
+        addEventListener('mousemove', onMouseMove)
     }
 }
 
