@@ -22,7 +22,7 @@ const scrollTo = gsap.quickTo(smoothScroll, "y", {
   ease: "power3.out"
 });
 
-const cameraY = { y: 2 }
+const cameraTransforms = { pX: 0 , pY: 2, pZ: 5, rX: 0, rY: 0, rZ: 0 }
 
 const dbUpTransforms = { pX: 0, pY: 2, pZ: 0, rX: 0, rY: 0 }
 const dbDownTransforms = { pX: 0, pY: 2, pZ: 0, rX: 0, rY: 0 }
@@ -199,8 +199,8 @@ export function canvasMain() {
 
         // Position camera
 
-        camera.position.y = cameraY.y;
-        camera.position.z = 5;
+        camera.position.y = cameraTransforms.pY;
+        camera.position.z = cameraTransforms.pZ;
 
         // Rendering / Logic
 
@@ -239,7 +239,6 @@ export function canvasMain() {
 
 
         function animate() {
-            camera.position.y = cameraY.y
 
             // Good end pos
             // if(modelDBUp){
@@ -304,7 +303,11 @@ export function canvasMain() {
                     (mat as THREE.MeshBasicMaterial).opacity = deltaTBAOpacity;
                 }
             }
-            camera.position.z = 5 - 5*deltaCamera;
+
+            cameraTransforms.pZ = 5 - 5*deltaCamera;
+
+            camera.position.z = cameraTransforms.pZ;
+            camera.position.y = cameraTransforms.pY
 
 
 
