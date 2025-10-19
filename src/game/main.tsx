@@ -84,7 +84,7 @@ export function gemFinderGameMain() {
             } );
 
             headerTopGeometry.computeBoundingBox();
-            const centerTop = headerTopGeometry.boundingBox.getCenter(new THREE.Vector3());
+            const centerTop = headerTopGeometry.boundingBox?.getCenter(new THREE.Vector3());
 
             const headerBottomGeometry = new TextGeometry( 'Acheive bigger..', {
                 font: font,
@@ -99,18 +99,18 @@ export function gemFinderGameMain() {
             } );
 
             headerBottomGeometry.computeBoundingBox();
-            const centerBottom = headerBottomGeometry.boundingBox.getCenter(new THREE.Vector3());
+            const centerBottom = headerBottomGeometry.boundingBox?.getCenter(new THREE.Vector3());
 
 
 
 
             const meshTop = new THREE.Mesh(headerTopGeometry,fontMat)
-            meshTop.position.x = -centerTop.x;
+            if(centerTop) meshTop.position.x = -centerTop.x;
             meshTop.position.y = 3.8;
             meshTop.position.z = 1;
 
             const meshBottom = new THREE.Mesh(headerBottomGeometry,fontMat)
-            meshBottom.position.x = -centerBottom.x;
+            if(centerBottom) meshBottom.position.x = -centerBottom.x;
             meshBottom.position.y = 0;
             meshBottom.position.z = 1;
 
@@ -134,12 +134,12 @@ export function gemFinderGameMain() {
             } );
 
             tbaGeometry.computeBoundingBox();
-            const tbaCenter = tbaGeometry.boundingBox.getCenter(new THREE.Vector3())
+            const tbaCenter = tbaGeometry.boundingBox?.getCenter(new THREE.Vector3())
             tbaMesh = new THREE.Mesh(tbaGeometry,fontTBAMat)
 
             tbaMesh.position.y = 2
             tbaMesh.position.z = -5
-            tbaMesh.position.x -= tbaCenter.x;
+            if(tbaCenter) tbaMesh.position.x -= tbaCenter.x;
 
             scene.add(tbaMesh)
 
@@ -282,6 +282,7 @@ export function gemFinderGameMain() {
             const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1)))
             const deltaTBAOpacity = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1.5)))
 
+            // @ts-expect-error It does not recognize the mesh basic material
             tbaMesh.material.opacity = deltaTBAOpacity;
             camera.position.z = 5 - 5*deltaCamera;
 
