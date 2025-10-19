@@ -27,7 +27,7 @@ const cameraY = { y: 2 }
 const dbUpTransforms = { pX: 0, pY: 2, pZ: 0, rX: 0, rY: 0 }
 const dbDownTransforms = { pX: 0, pY: 2, pZ: 0, rX: 0, rY: 0 }
 
-export function gemFinderGameMain() {
+export function canvasMain() {
 
     smoothScroll.y = scrollY;
 
@@ -160,7 +160,7 @@ export function gemFinderGameMain() {
                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
             function (error) {
-                console.log('An error happened');
+                console.log('An error happened: ' + error);
             }
         );
 
@@ -176,7 +176,7 @@ export function gemFinderGameMain() {
                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
             function (error) {
-                console.log('An error happened');
+                console.log('An error happened: ' + error);
             }
         );
 

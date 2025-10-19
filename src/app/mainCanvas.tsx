@@ -2,11 +2,11 @@
 
 
 import { useEffect } from "react";
-import {gemFinderGameMain} from "../game/main"
+import {canvasMain} from "../game/main"
 
 export default function MainCanvas() {
     useEffect(() => {
-        gemFinderGameMain();
+        canvasMain();
     }, [])
 
     return(
