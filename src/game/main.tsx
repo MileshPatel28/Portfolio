@@ -1,15 +1,9 @@
 'use client';
 
-import { Sky } from 'three/addons/objects/Sky.js';
-import { Water } from 'three/addons/objects/Water.js';
-// import * as THREE from 'three';
 import * as THREE from 'three/webgpu';
-// import * as THREEGPU from 'three/webgpu';
 import gsap from 'gsap';
 import { GLTF, GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { color, mod } from 'three/tsl';
 import { DRACOLoader } from 'three/examples/jsm/Addons.js';
-import { Scene } from 'three/src/Three.WebGPU.Nodes.js';
 import { pass, mrt, output, emissive } from 'three/tsl';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 
@@ -22,12 +16,20 @@ let postProcessing: THREE.PostProcessing;
 
 let needRender = true;
 
+const smoothScroll = {y: 0}
+const scrollTo = gsap.quickTo(smoothScroll, "y", {
+  duration: 5,
+  ease: "power3.out"
+});
+
 const cameraY = { y: 2 }
 
 const dbUpTransforms = { pX: 0, pY: 2, pZ: 0, rX: 0, rY: 0 }
 const dbDownTransforms = { pX: 0, pY: 2, pZ: 0, rX: 0, rY: 0 }
 
 export function gemFinderGameMain() {
+
+    smoothScroll.y = scrollY;
 
     const totalScroll = document.body.scrollHeight;
 
@@ -166,6 +168,8 @@ export function gemFinderGameMain() {
             // })
 
 
+            scrollTo(window.scrollY);
+
 
 
             // gsap.to(dbUpTransforms,{
@@ -240,7 +244,7 @@ export function gemFinderGameMain() {
             //     modelDBDown.scene.rotation.y = 0.4;
             // }
 
-            const deltaDBCompletion = Math.min(1, (scrollY / (totalScroll * 0.1)))
+            const deltaDBCompletion = Math.min(1, (smoothScroll.y / (totalScroll * 0.1)))
 
             dbUpTransforms.pX = -1.5 * deltaDBCompletion
             dbUpTransforms.pY = 2 + .3 * deltaDBCompletion
@@ -276,9 +280,7 @@ export function gemFinderGameMain() {
 
         function render() {
             // renderer.render(scene, camera)
-            if(!needRender) return;
             postProcessing.render();
-            needRender = false;
         }
 
         addEventListener('resize', onResize)
