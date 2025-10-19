@@ -239,6 +239,8 @@ export function canvasMain() {
 
 
         function animate() {
+            const globalScrollPercent = smoothScroll.y / totalScroll;
+
 
             // Good end pos
             // if(modelDBUp){
@@ -292,7 +294,7 @@ export function canvasMain() {
 
 
 
-            const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
+            // const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
             const deltaTBAOpacity = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1.5)))
 
             if (whoAmIMesh) {
@@ -304,7 +306,9 @@ export function canvasMain() {
                 }
             }
 
-            cameraTransforms.pZ = 5 - 5*deltaCamera;
+            cameraTransforms.pZ = gsap.utils.interpolate(
+                [5,0,0,0,0,0,0,0,0,0],globalScrollPercent
+            )
 
             camera.position.z = cameraTransforms.pZ;
             camera.position.y = cameraTransforms.pY
