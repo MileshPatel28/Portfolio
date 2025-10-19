@@ -55,16 +55,20 @@ export function gemFinderGameMain() {
             antialias: true
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.toneMappingExposure = 0.2;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 2;
         renderer.setAnimationLoop(animate)
 
         scene.background = new THREE.Color('rgb(21,21,21)')
 
         // Scene specific
 
+        let tbaMesh : THREE.Mesh;
+
         fontLoader.load( '/fonts/JetBrainsMonoThin_Regular.json', function ( font ) {
             
             const fontMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)'})
+            const fontTBAMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)', transparent: true})
             const headerFontSize = 0.4;
 
             const headerTopGeometry = new TextGeometry( 'Dream big..', {
@@ -113,6 +117,31 @@ export function gemFinderGameMain() {
 
             scene.add(meshTop);
             scene.add(meshBottom)
+
+
+            // TBA 
+
+            const tbaGeometry = new TextGeometry( 'TBA..', {
+                font: font,
+                size: headerFontSize, 
+                depth: 0,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.01,
+                bevelSize: 0.005,
+                bevelOffset: 0,
+                bevelSegments: 3,
+            } );
+
+            tbaGeometry.computeBoundingBox();
+            const tbaCenter = tbaGeometry.boundingBox.getCenter(new THREE.Vector3())
+            tbaMesh = new THREE.Mesh(tbaGeometry,fontTBAMat)
+
+            tbaMesh.position.y = 2
+            tbaMesh.position.z = -5
+            tbaMesh.position.x -= tbaCenter.x;
+
+            scene.add(tbaMesh)
 
         } );
 
@@ -163,7 +192,7 @@ export function gemFinderGameMain() {
 
         const outputPass = scenePass.getTextureNode();
         const emissivePass = scenePass.getTextureNode('emissive');
-        const bloomPass = bloom(emissivePass, 0.25, .5);
+        const bloomPass = bloom(emissivePass, 0.15, .5);
         postProcessing = new THREE.PostProcessing(renderer);
         postProcessing.outputNode = outputPass.add(bloomPass);
 
@@ -217,7 +246,7 @@ export function gemFinderGameMain() {
             //     modelDBDown.scene.rotation.y = 0.4;
             // }
 
-            const deltaDBCompletion = Math.min(1, (smoothScroll.y / (totalScroll * 0.1)))
+            const deltaDBCompletion = Math.min(1, (smoothScroll.y / (totalScroll * 0.05)))
 
             dbUpTransforms.pX = -1.5 * deltaDBCompletion
             dbUpTransforms.pY = 2 + .3 * deltaDBCompletion
@@ -250,7 +279,13 @@ export function gemFinderGameMain() {
 
 
 
-            const deltaCamera = Math.min(1, (smoothScroll.y / (totalScroll * 0.1)))
+            const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1)))
+            const deltaTBAOpacity = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1.5)))
+
+            tbaMesh.material.opacity = deltaTBAOpacity;
+            camera.position.z = 5 - 5*deltaCamera;
+
+
 
             render();
         }
