@@ -72,56 +72,24 @@ export function canvasMain() {
 
         // Scene specific
 
-        // Timeline line
+        // About me seciton
 
-        // const timelineMat = new THREE.ShaderMaterial({
-        //     transparent: true, 
-        //     uniforms: {
-        //         nearZ: { value: 0 },   
-        //         farZ: { value: 100 }   
-        //     },
-        //     vertexShader: `
-        //         varying float vZ;
-        //         void main() {
-        //         vZ = position.z; // local Z position
-        //         gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-        //         }
-        //     `,
-        //     fragmentShader: `
-        //         uniform float nearZ;
-        //         uniform float farZ;
-        //         varying float vZ;
+        const sceneAboutMe = new THREE.Scene();
 
-        //         void main() {
-        //         float alpha = 1.0 - smoothstep(nearZ, farZ, vZ); // fades from 1->0 along Z
-        //         gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
-        //         }
-        //     `
-        //     });
-        // const timelineGeo = new THREE.BoxGeometry(1,0.1,100)
-        // const timelineMesh = new THREE.Mesh(timelineGeo,timelineMat)
+        const abtMeCard1Geo = new THREE.BoxGeometry(0.5,8,10)
+        const abtMeCard1Mat = new THREE.MeshStandardMaterial({
+            color: 'rgba(42, 42, 42, 1)',
+            roughness: 1,  
+        })
+        const abtMeCard1Mesh = new THREE.Mesh(abtMeCard1Geo,abtMeCard1Mat);
 
-        // timelineMesh.position.set(0,-3,-30)
-
-        // scene.add(timelineMesh)
+        abtMeCard1Mesh.position.set(4,-10,32)
+        abtMeCard1Mesh.rotation.set(0,0,0.1)
         
-        // About me Card 1
-        // const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
-        // hemiLight.position.set(0, 20, 0);
-        // scene.add(hemiLight);
+        sceneAboutMe.add(abtMeCard1Mesh);
 
-        // const abtMeCard1Geo = new THREE.BoxGeometry(0.5,8,10)
-        // const abtMeCard1Mat = new THREE.MeshStandardMaterial({
-        //     color: 'rgba(42, 42, 42, 1)',
-        //     roughness: 1,  
-        // })
-        // const abtMeCard1Mesh = new THREE.Mesh(abtMeCard1Geo,abtMeCard1Mat);
 
-        // abtMeCard1Mesh.position.set(4,-10,32)
-        // abtMeCard1Mesh.rotation.set(0,0,0.1)
-
-        
-        // scene.add(abtMeCard1Mesh);
+        scene.add(sceneAboutMe)
 
         let topHeaderText: THREE.Mesh;
         let bottomHeaderText: THREE.Mesh;
@@ -130,6 +98,9 @@ export function canvasMain() {
 
         let firstNameMesh : THREE.Mesh;
         let lastNameMesh : THREE.Mesh;
+
+
+        let aboutMe1Mesh : THREE.Mesh;
         
 
         fontLoader.load('fonts/JetBrainsMonoThin_Regular.json', function (font) {
@@ -258,6 +229,33 @@ export function canvasMain() {
             if (lastNameCenter) lastNameMesh.position.x -= lastNameCenter.x;
 
             scene.add(lastNameMesh)
+
+
+            // About Me meshes
+            const fontAboutMeMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)', transparent: true })
+
+
+            const aboutMe1Geo = new TextGeometry('19 years old', {
+                font: font,
+                size: 1.0,
+                depth: 0,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.01,
+                bevelSize: 0.005,
+                bevelOffset: 0,
+                bevelSegments: 3,
+            });
+            aboutMe1Geo.computeBoundingBox()
+            const aboutMe1Center = aboutMe1Geo.boundingBox?.getCenter(new THREE.Vector3())
+            aboutMe1Mesh = new THREE.Mesh(aboutMe1Geo,fontAboutMeMat)
+
+
+            aboutMe1Mesh.position.set(0,0,32)
+            aboutMe1Mesh.rotation.set(0,Math.PI/2,0)
+            if (aboutMe1Center) aboutMe1Mesh.position.x -= aboutMe1Center.x;
+
+            sceneAboutMe.add(aboutMe1Mesh)
 
         });
 
@@ -591,11 +589,6 @@ export function canvasMain() {
                         emissive: 'rgba(64, 147, 255, 1)',
                         emissiveIntensity: 32
                     });
-
-
-                    const points = [];
-                    points.push(new THREE.Vector3(randomX, randomY, initZ));
-                    points.push(new THREE.Vector3(randomX, randomY, initZ + 10));
 
                     const lineGeo = new THREE.BoxGeometry(0.1,0.1,10)
                     const line = new THREE.Mesh(lineGeo, lineMat)
