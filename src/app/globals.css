@@ -45,5 +45,4 @@ html {
   z-index: 10;
   position: fixed;
   mix-blend-mode: difference;
-  isolation: isolate
 }
