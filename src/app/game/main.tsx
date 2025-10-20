@@ -76,17 +76,17 @@ export function canvasMain() {
 
         const sceneAboutMe = new THREE.Scene();
 
-        const abtMeCard1Geo = new THREE.BoxGeometry(0.5,8,10)
-        const abtMeCard1Mat = new THREE.MeshStandardMaterial({
-            color: 'rgba(42, 42, 42, 1)',
-            roughness: 1,  
-        })
-        const abtMeCard1Mesh = new THREE.Mesh(abtMeCard1Geo,abtMeCard1Mat);
+        // const abtMeCard1Geo = new THREE.BoxGeometry(0.5,8,10)
+        // const abtMeCard1Mat = new THREE.MeshStandardMaterial({
+        //     color: 'rgba(42, 42, 42, 1)',
+        //     roughness: 1,  
+        // })
+        // const abtMeCard1Mesh = new THREE.Mesh(abtMeCard1Geo,abtMeCard1Mat);
 
-        abtMeCard1Mesh.position.set(4,-10,32)
-        abtMeCard1Mesh.rotation.set(0,0,0.1)
+        // abtMeCard1Mesh.position.set(4,-10,32)
+        // abtMeCard1Mesh.rotation.set(0,0,0.1)
         
-        sceneAboutMe.add(abtMeCard1Mesh);
+        // sceneAboutMe.add(abtMeCard1Mesh);
 
 
         scene.add(sceneAboutMe)
