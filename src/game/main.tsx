@@ -151,15 +151,15 @@ export function canvasMain() {
         let modelDBUp : GLTF;
         gltfLoader.load(
             'models/DatabaseHaftUp.gltf',
-            function (gltf) {
+            (gltf) => {
                 modelDBUp = gltf;
                 modelDBUp.scene.position.y += 2;
                 scene.add(modelDBUp.scene);
             },
-            function (xhr) {
+            (xhr) => {
                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
-            function (error) {
+            (error) => {
                 console.log('An error happened: ' + error);
             }
         );
@@ -167,19 +167,27 @@ export function canvasMain() {
         let modelDBDown : GLTF;
         gltfLoader.load(
             'models/DatabaseHaftDown.gltf',
-            function (gltf) {
+            (gltf) => {
                 modelDBDown = gltf;
                 modelDBDown.scene.position.y += 2;
                 scene.add(modelDBDown.scene);
             },
-            function (xhr) {
+            (xhr) => {
                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
-            function (error) {
+            (error) => {
                 console.log('An error happened: ' + error);
             }
         );
 
+
+        // let modelBlackHole : GLTF;
+        // gltfLoader.load(
+        //     'models/blackHole.gltf',
+        //     (gltf) => {
+
+        //     }
+        // )
 
 
 
@@ -293,25 +301,47 @@ export function canvasMain() {
             }
 
 
+            if(globalScrollPercent >= 1/10){
+                modelDBUp.scene.visible = false;
+                modelDBDown.scene.visible = false;
+            }
+            else{
+                modelDBUp.scene.visible = true;
+                modelDBDown.scene.visible = true;
+            }
+
+
 
             // const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
-            const deltaTBAOpacity = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 1.5)))
+            const TBAOpacity = gsap.utils.interpolate(
+                [0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],globalScrollPercent
+            )
 
             if (whoAmIMesh) {
                 const mat = whoAmIMesh.material;
                 if (Array.isArray(mat)) {
-                    (mat[0] as THREE.MeshBasicMaterial).opacity = deltaTBAOpacity;
+                    (mat[0] as THREE.MeshBasicMaterial).opacity = TBAOpacity;
                 } else {
-                    (mat as THREE.MeshBasicMaterial).opacity = deltaTBAOpacity;
+                    (mat as THREE.MeshBasicMaterial).opacity = TBAOpacity;
                 }
             }
 
+        
+
+            // Camera transforms
+            cameraTransforms.pX = gsap.utils.interpolate(
+                [0,0,3,0,0,0,0,0,0,0],globalScrollPercent
+            )
             cameraTransforms.pZ = gsap.utils.interpolate(
                 [5,0,0,0,0,0,0,0,0,0],globalScrollPercent
             )
 
-            camera.position.z = cameraTransforms.pZ;
+            // cameraTransforms.
+
+
+            camera.position.x = cameraTransforms.pX;
             camera.position.y = cameraTransforms.pY
+            camera.position.z = cameraTransforms.pZ;
 
 
 
