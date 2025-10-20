@@ -229,10 +229,11 @@ export function canvasMain() {
 
         function onMouseMove(event: MouseEvent) {
             if (event) {
-                const movementConstant = 0.125;
 
-                mouseX = ((event.clientX / window.innerWidth) - 0.5) * movementConstant;
-                mouseY = -((event.clientY / window.innerWidth) - 0.5) * movementConstant;
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+
+               
 
             }
         }
@@ -243,6 +244,13 @@ export function canvasMain() {
         function animate() {
             const globalScrollPercent = smoothScroll.y / totalScroll;
             const deltaDBCompletion = Math.min(1, (smoothScroll.y / (totalScroll * 0.05)))
+
+            if(mouseDiv){
+                mouseDiv.style.top = mouseY.toString() + 'px';
+                mouseDiv.style.left = mouseX.toString() + 'px   ';
+            }
+
+
 
             dbUpTransforms.pX = -1.5 * deltaDBCompletion
             dbUpTransforms.pY = 2 + .3 * deltaDBCompletion
@@ -365,8 +373,20 @@ export function canvasMain() {
             camera.rotation.y = cameraTransforms.rY + (cameraTransforms.rY >= 0.7 ? Math.random() / cameraShakeConstant : 0);
             camera.rotation.z = (cameraTransforms.rY >= 0.7 ? Math.random() / cameraShakeConstant : 0)
 
+            // Must fix
+
+            const movementConstant = 0.125;
+
+            //  mouseX = ((event.clientX / window.innerWidth) - 0.5) * movementConstant;
+            //     mouseY = -((event.clientY / window.innerWidth) - 0.5) * movementConstant;
+
             if (camera.position.z == 5) {
-                camera.lookAt(new THREE.Vector3(mouseX, 2 + mouseY, 0));
+                camera.lookAt(new THREE.Vector3(
+                    ((mouseX/ window.innerWidth) - 0.5) * movementConstant,
+                    2 - ((mouseY / window.innerWidth) - 0.5) * movementConstant
+                    , 
+                    0
+                ));
             }
 
             if (cameraTransforms.rY >= 0.5) {

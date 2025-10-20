@@ -12,6 +12,10 @@ export default function Home() {
         backgroundColor: 'rgb(255,255,255)',
         borderRadius: '50%',
         display: 'inline-block',
+        top: '50px',
+        left: '50px',
+        zIndex: 10,
+        position: 'fixed',
       }}></div>
 
     </div>
