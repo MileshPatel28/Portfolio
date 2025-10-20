@@ -15,6 +15,9 @@ let mainCanvas: HTMLCanvasElement;
 
 let postProcessing: THREE.PostProcessing;
 
+let mouseX = 0;
+let mouseY = 0;
+
 
 const smoothScroll = { y: 0 }
 const scrollTo = gsap.quickTo(smoothScroll, "y", {
@@ -139,7 +142,7 @@ export function canvasMain() {
             const whoAmICenter = whoAmIGeometry.boundingBox?.getCenter(new THREE.Vector3())
             whoAmIMesh = new THREE.Mesh(whoAmIGeometry, fontWhoAmIMat)
 
-            whoAmIMesh.position.y = 2
+            whoAmIMesh.position.y = 1.8
             whoAmIMesh.position.z = -5
             if (whoAmICenter) whoAmIMesh.position.x -= whoAmICenter.x;
 
@@ -226,12 +229,8 @@ export function canvasMain() {
             if (event) {
                 const movementConstant = 0.125;
 
-                const deltaX = ((event.clientX / window.innerWidth) - 0.5) * movementConstant;
-                const deltaY = -((event.clientY / window.innerWidth) - 0.5) * movementConstant;
-
-                if (camera.position.z == 5) {
-                    camera.lookAt(new THREE.Vector3(deltaX, 2 + deltaY, 0));
-                }
+                mouseX = ((event.clientX / window.innerWidth) - 0.5) * movementConstant;
+                mouseY = -((event.clientY / window.innerWidth) - 0.5) * movementConstant;
 
             }
         }
@@ -364,6 +363,10 @@ export function canvasMain() {
             camera.rotation.y = cameraTransforms.rY + (cameraTransforms.rY >= 0.7 ? Math.random() / cameraShakeConstant : 0);
             camera.rotation.z = (cameraTransforms.rY >= 0.7 ? Math.random() / cameraShakeConstant : 0)
 
+            if (camera.position.z == 5) {
+                camera.lookAt(new THREE.Vector3(mouseX, 2 + mouseY, 0));
+            }
+
             if (cameraTransforms.rY >= 0.5) {
 
                 if (Date.now() - lastLineSpawned % 125) {
@@ -387,7 +390,6 @@ export function canvasMain() {
                     const line = new THREE.Line(lineGeo, lineMat)
 
                     scene.add(line);
-
                     spaceWarpLines.push(line)
 
 
