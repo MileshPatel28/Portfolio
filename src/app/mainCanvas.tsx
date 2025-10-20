@@ -2,7 +2,8 @@
 
 
 import { useEffect } from "react";
-import {canvasMain} from "../game/main"
+import { canvasMain } from "./game/main";
+// import {canvasMain} from "./game/main"
 
 export default function MainCanvas() {
     useEffect(() => {

@@ -246,8 +246,8 @@ export function canvasMain() {
             const deltaDBCompletion = Math.min(1, (smoothScroll.y / (totalScroll * 0.05)))
 
             if(mouseDiv){
-                mouseDiv.style.top = mouseY.toString() + 'px';
-                mouseDiv.style.left = mouseX.toString() + 'px   ';
+                mouseDiv.style.top = (mouseY - 25).toString() + 'px';
+                mouseDiv.style.left = (mouseX - 25).toString() + 'px';
             }
 
 
