@@ -314,7 +314,7 @@ export function canvasMain() {
 
                             material.transparent = true;
                             material.opacity = blackHoleOpacity
-                            material.emissiveIntensity = blackHoleOpacity * 8 * (blackHoleOpacity >= 1 ? Math.max(1, Math.random() + 0.125) : 1);
+                            material.emissiveIntensity = blackHoleOpacity * 8 * (blackHoleOpacity >= 1 ? Math.max(1, Math.random() + 0.200) : 1);
                         })
                     }
                 })
@@ -370,17 +370,18 @@ export function canvasMain() {
 
                     lastLineSpawned = Date.now();
 
-                    const randomX = getRandomArbitrary(-180, 30)
-                    const randomY = getRandomArbitrary(-70, 70)
+                    const randomX = getRandomArbitrary(-250, 30)
+                    const randomY = getRandomArbitrary(-140, 140)
                     const initZ = -300;
 
                     const lineMat = new THREE.LineBasicMaterial({
-                        color: 'rgb(255,255,255)'
+                        color: 'rgba(64, 147, 255, 1)'
                     });
+
 
                     const points = [];
                     points.push(new THREE.Vector3(randomX, randomY, initZ));
-                    points.push(new THREE.Vector3(randomX, randomY, initZ + 4));
+                    points.push(new THREE.Vector3(randomX, randomY, initZ + 10));
 
                     const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
                     const line = new THREE.Line(lineGeo, lineMat)
