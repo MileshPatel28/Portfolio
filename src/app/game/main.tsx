@@ -12,6 +12,7 @@ let scene: THREE.Scene
 
 let renderer: THREE.WebGPURenderer
 let mainCanvas: HTMLCanvasElement;
+let mainPageElement: HTMLDivElement;
 
 let postProcessing: THREE.PostProcessing;
 
@@ -41,8 +42,9 @@ export function canvasMain() {
 
     mainCanvas = document.getElementById('mainScene') as HTMLCanvasElement
     const mouseDiv = document.getElementById('mouseDiv') as HTMLDivElement
+    mainPageElement = document.getElementById('mainPage') as HTMLDivElement;
 
-    if (mainCanvas != null) {
+    if (mainCanvas != null && mainPageElement != null) {
         const gltfLoader = new GLTFLoader();
 
         const dracoLoader = new DRACOLoader();
@@ -217,6 +219,13 @@ export function canvasMain() {
             ease: 'expo.inOut',
         })
 
+        mouseDiv.style.opacity = '0';
+        gsap.to(mouseDiv, {
+            opacity: 1,
+            duration: 2,
+            ease: 'expo.inOut',
+        })
+
         // ============================================= Configuration for project ============================================== //
 
         function onResize() {
@@ -249,6 +258,10 @@ export function canvasMain() {
 
         const oldMousePos = new THREE.Vector2(mouseX,mouseY)
 
+        // const mouseEffectDivs: { trailingVector: THREE.Vector2; div: HTMLDivElement; }[] = []
+        // let lastEffectSpawned = Date.now();
+
+
         function animate() {
             const globalScrollPercent = smoothScroll.y / totalScroll;
             const deltaDBCompletion = Math.min(1, (smoothScroll.y / (totalScroll * 0.05)))
@@ -256,20 +269,57 @@ export function canvasMain() {
 
 
             if(mouseDiv){
-                mouseDiv.style.top = (mouseY - 25).toString() + 'px';
-                mouseDiv.style.left = (mouseX - 25).toString() + 'px';
-
+                const mouseDivDefaultSize = 75;
                 const mouseDelta = new THREE.Vector2(mouseX - oldMousePos.x,oldMousePos.y - mouseY)
-                const angle = mouseDelta.angle()*180/Math.PI
 
-                const trailingVector = new THREE.Vector2(
-                    -Math.sin(angle * Math.PI / 180),
-                    -Math.cos(angle * Math.PI / 180)
-                )
+                const mouseDivSize = mouseDivDefaultSize*mouseDelta.length()/100 + 50;
+                
+                mouseDiv.style.width = (mouseDivSize) + 'px';
+                mouseDiv.style.height = (mouseDivSize) + 'px';
 
-                // console.log(mouseDelta.angle()*180/Math.PI)
+                mouseDiv.style.top = (mouseY - mouseDivSize/2).toString() + 'px';
+                mouseDiv.style.left = (mouseX - mouseDivSize/2).toString() + 'px';
+
+          
+
+                console.log(mouseDelta.length);
+
+
 
                 oldMousePos.set(mouseX,mouseY)
+
+                // const mousePosition = new THREE.Vector2(mouseX,mouseY)
+                // const angle = mouseDelta.angle()*180/Math.PI
+
+                // const trailingVector = new THREE.Vector2(
+                //     -Math.sin(angle * Math.PI / 180)*4,
+                //     -Math.cos(angle * Math.PI / 180)*4
+                // )
+
+                // const now = Date.now();
+
+                // if ((now - lastEffectSpawned) >= 200) {
+                //     lastEffectSpawned = now;
+
+                //     const mouseDivEffect = document.createElement('div');
+
+                //     mouseDivEffect.className = 'invertDivEffect'
+                //     mouseDivEffect.style.top = mousePosition.add(trailingVector).y.toString() + 'px';
+                //     mouseDivEffect.style.left = mousePosition.add(trailingVector).x.toString() + 'px';
+                //     mouseDivEffect.style.zIndex = mouseEffectDivs.length.toString();
+                //     mainPageElement.append(mouseDivEffect)
+
+                //     mouseEffectDivs.push({
+                //         trailingVector: trailingVector,
+                //         div: mouseDivEffect
+                //     })
+                // }
+
+                // mouseEffectDivs.forEach((obj) => {
+                //     obj.div.style.top = (parseFloat(obj.div.style.top) - obj.trailingVector.y).toString() + 'px'
+                //     obj.div.style.left = (parseFloat(obj.div.style.left) - obj.trailingVector.x).toString() + 'px'
+                // })
+
             }
 
 
