@@ -64,6 +64,8 @@ export function canvasMain() {
         // Scene specific
 
         let whoAmIMesh : THREE.Mesh;
+        let topHeaderText : THREE.Mesh;
+        let bottomHeaderText : THREE.Mesh;  
 
         fontLoader.load( 'fonts/JetBrainsMonoThin_Regular.json', function ( font ) {
             
@@ -104,19 +106,19 @@ export function canvasMain() {
 
 
 
-            const meshTop = new THREE.Mesh(headerTopGeometry,fontMat)
-            if(centerTop) meshTop.position.x = -centerTop.x;
-            meshTop.position.y = 3.8;
-            meshTop.position.z = 1;
+            topHeaderText = new THREE.Mesh(headerTopGeometry,fontMat)
+            if(centerTop) topHeaderText.position.x = -centerTop.x;
+            topHeaderText.position.y = 3.8;
+            topHeaderText.position.z = 1;
 
-            const meshBottom = new THREE.Mesh(headerBottomGeometry,fontMat)
-            if(centerBottom) meshBottom.position.x = -centerBottom.x;
-            meshBottom.position.y = 0;
-            meshBottom.position.z = 1;
+            bottomHeaderText = new THREE.Mesh(headerBottomGeometry,fontMat)
+            if(centerBottom) bottomHeaderText.position.x = -centerBottom.x;
+            bottomHeaderText.position.y = 0;
+            bottomHeaderText.position.z = 1;
 
 
-            scene.add(meshTop);
-            scene.add(meshBottom)
+            scene.add(topHeaderText);
+            scene.add(bottomHeaderText)
 
 
             // Who am I? 
@@ -156,12 +158,6 @@ export function canvasMain() {
                 modelDBUp.scene.position.y += 2;
                 scene.add(modelDBUp.scene);
             },
-            (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            (error) => {
-                console.log('An error happened: ' + error);
-            }
         );
 
         let modelDBDown : GLTF;
@@ -172,22 +168,17 @@ export function canvasMain() {
                 modelDBDown.scene.position.y += 2;
                 scene.add(modelDBDown.scene);
             },
-            (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            (error) => {
-                console.log('An error happened: ' + error);
-            }
         );
 
 
-        // let modelBlackHole : GLTF;
-        // gltfLoader.load(
-        //     'models/blackHole.gltf',
-        //     (gltf) => {
-
-        //     }
-        // )
+        let modelBlackHole : GLTF;
+        gltfLoader.load(
+            'models/blackHole.gltf',
+            (gltf) => {
+                modelBlackHole = gltf;
+                scene.add(modelBlackHole.scene)
+            }
+        )
 
 
 
@@ -304,45 +295,94 @@ export function canvasMain() {
             if(globalScrollPercent >= 1/10){
                 modelDBUp.scene.visible = false;
                 modelDBDown.scene.visible = false;
+
+                topHeaderText.visible = false;
+                bottomHeaderText.visible = false;
+
+                
             }
             else{
                 modelDBUp.scene.visible = true;
                 modelDBDown.scene.visible = true;
+
+                topHeaderText.visible = true;
+                bottomHeaderText.visible = true;
             }
 
 
+            // Blackhole Logic
+
+            const blackHoleOpacity = gsap.utils.interpolate(
+                [0,0,0,0.5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],globalScrollPercent
+            )
+
+            const blackHoleInclination = gsap.utils.interpolate(
+                [0,0,0,0,0,0,0.5,1,1,1,1,1,1,1,1,1,1,1,1,1],globalScrollPercent
+            )
+
+            if(modelBlackHole){
+                modelBlackHole.scene.position.set(0,2,-30);
+                modelBlackHole.scene.lookAt(camera.position);
+                modelBlackHole.scene.rotation.x = 0.1*blackHoleInclination
+                modelBlackHole.scene.rotation.z = 0.1*blackHoleInclination
+
+                modelBlackHole.scene.traverse((child) => {
+
+                    if(child instanceof THREE.Mesh){
+                        modifyMaterial(child.material,(material) => {
+
+                            material.transparent = true;
+                            material.opacity = blackHoleOpacity
+                            material.emissiveIntensity = blackHoleOpacity*8 * (blackHoleOpacity >= 1 ? Math.max(1,Math.random()+0.125) : 1);
+                        })
+                    }
+                })
+            }
+
 
             // const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
-            const TBAOpacity = gsap.utils.interpolate(
+            const whoAmIOpacity = gsap.utils.interpolate(
                 [0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],globalScrollPercent
             )
 
             if (whoAmIMesh) {
-                const mat = whoAmIMesh.material;
-                if (Array.isArray(mat)) {
-                    (mat[0] as THREE.MeshBasicMaterial).opacity = TBAOpacity;
-                } else {
-                    (mat as THREE.MeshBasicMaterial).opacity = TBAOpacity;
-                }
+                modifyMaterial(whoAmIMesh.material, (material) => {
+                    material.opacity = whoAmIOpacity;
+                })
             }
 
         
 
             // Camera transforms
             cameraTransforms.pX = gsap.utils.interpolate(
-                [0,0,3,0,0,0,0,0,0,0],globalScrollPercent
-            )
-            cameraTransforms.pZ = gsap.utils.interpolate(
-                [5,0,0,0,0,0,0,0,0,0],globalScrollPercent
+                [0,0,0,15,15,15,15,15,15,15],globalScrollPercent
             )
 
-            // cameraTransforms.
+            cameraTransforms.pY = gsap.utils.interpolate(
+                [2,2,2,-10,-10,-10,-10,10,10,10],globalScrollPercent
+            )
+            cameraTransforms.pZ = gsap.utils.interpolate(
+                [5,0,0,40,40,40,40,40,40,40],globalScrollPercent
+            )
+
+            cameraTransforms.rY = gsap.utils.interpolate(
+                [0,0,0,0.7,0.7,0.7,0.7,0.7,0.7,0.7],globalScrollPercent
+            )
+
+        
 
 
             camera.position.x = cameraTransforms.pX;
             camera.position.y = cameraTransforms.pY
             camera.position.z = cameraTransforms.pZ;
 
+            // Adjust depending on percentage of scroll instead of camera
+            camera.rotation.x = (cameraTransforms.rY >= 0.7 ? Math.random()/400 : 0)
+            camera.rotation.y = cameraTransforms.rY + (cameraTransforms.rY >= 0.7 ? Math.random()/400 : 0);
+            camera.rotation.z = (cameraTransforms.rY >= 0.7 ? Math.random()/400 : 0)
+            
+
+            // camera.lookAt(modelBlackHole.scene.position)
 
 
             render();
@@ -358,3 +398,14 @@ export function canvasMain() {
     }
 }
 
+
+function modifyMaterial(
+    mat : THREE.Material | THREE.Material[],
+    materialModifyCallback : (material : THREE.MeshStandardMaterial) => void
+){
+    if (Array.isArray(mat)) {
+        materialModifyCallback(mat[0] as THREE.MeshStandardMaterial)
+    } else {
+        materialModifyCallback(mat as THREE.MeshStandardMaterial)
+    }
+}
