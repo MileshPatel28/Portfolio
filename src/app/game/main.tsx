@@ -33,6 +33,8 @@ const dbDownTransforms = { pX: 0, pY: 2, pZ: 0, rX: 0, rY: 0 }
 
 export function canvasMain() {
 
+    // ============================================= Init ============================================== //
+
     smoothScroll.y = scrollY;
 
     const totalScroll = document.body.scrollHeight;
@@ -206,7 +208,7 @@ export function canvasMain() {
         camera.position.y = cameraTransforms.pY;
         camera.position.z = cameraTransforms.pZ;
 
-        // Rendering / Logic
+        
 
         mainCanvas.style.opacity = '0';
         gsap.to(mainCanvas, {
@@ -214,6 +216,8 @@ export function canvasMain() {
             duration: 2,
             ease: 'expo.inOut',
         })
+
+        // ============================================= Configuration for project ============================================== //
 
         function onResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -229,14 +233,16 @@ export function canvasMain() {
 
         function onMouseMove(event: MouseEvent) {
             if (event) {
-
                 mouseX = event.clientX;
                 mouseY = event.clientY;
-
-               
-
             }
         }
+
+
+
+        // ============================================= Animations ============================================== //
+
+
 
         const spaceWarpLines: THREE.Line[] = [];
         let lastLineSpawned = 0;
@@ -256,14 +262,10 @@ export function canvasMain() {
                 const mouseDelta = new THREE.Vector2(mouseX - oldMousePos.x,oldMousePos.y - mouseY)
                 const angle = mouseDelta.angle()*180/Math.PI
 
-                let x = Math.sin(mouseDelta.x * Math.PI / 180)
-
                 const trailingVector = new THREE.Vector2(
                     -Math.sin(angle * Math.PI / 180),
                     -Math.cos(angle * Math.PI / 180)
                 )
-
-                
 
                 // console.log(mouseDelta.angle()*180/Math.PI)
 
