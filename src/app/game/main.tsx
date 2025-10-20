@@ -241,13 +241,33 @@ export function canvasMain() {
         const spaceWarpLines: THREE.Line[] = [];
         let lastLineSpawned = 0;
 
+        const oldMousePos = new THREE.Vector2(mouseX,mouseY)
+
         function animate() {
             const globalScrollPercent = smoothScroll.y / totalScroll;
             const deltaDBCompletion = Math.min(1, (smoothScroll.y / (totalScroll * 0.05)))
 
+
+
             if(mouseDiv){
                 mouseDiv.style.top = (mouseY - 25).toString() + 'px';
                 mouseDiv.style.left = (mouseX - 25).toString() + 'px';
+
+                const mouseDelta = new THREE.Vector2(mouseX - oldMousePos.x,oldMousePos.y - mouseY)
+                const angle = mouseDelta.angle()*180/Math.PI
+
+                let x = Math.sin(mouseDelta.x * Math.PI / 180)
+
+                const trailingVector = new THREE.Vector2(
+                    -Math.sin(angle * Math.PI / 180),
+                    -Math.cos(angle * Math.PI / 180)
+                )
+
+                
+
+                // console.log(mouseDelta.angle()*180/Math.PI)
+
+                oldMousePos.set(mouseX,mouseY)
             }
 
 

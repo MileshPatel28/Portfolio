@@ -11,7 +11,7 @@ export default function Home() {
 
       <div 
       id="mouseDiv" 
-      className="invertDivEffect">
+      className="invertDivEffect mouseDivs">
 
       </div>
 
