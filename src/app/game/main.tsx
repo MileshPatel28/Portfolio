@@ -73,9 +73,22 @@ export function canvasMain() {
         // Scene specific
         
         // About me Card 1
+        // const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
+        // hemiLight.position.set(0, 20, 0);
+        // scene.add(hemiLight);
 
-        // const abtMeCard1Geo = new 
+        // const abtMeCard1Geo = new THREE.BoxGeometry(0.5,8,10)
+        // const abtMeCard1Mat = new THREE.MeshStandardMaterial({
+        //     color: 'rgba(42, 42, 42, 1)',
+        //     roughness: 1,  
+        // })
+        // const abtMeCard1Mesh = new THREE.Mesh(abtMeCard1Geo,abtMeCard1Mat);
 
+        // abtMeCard1Mesh.position.set(4,-10,32)
+        // abtMeCard1Mesh.rotation.set(0,0,0.1)
+
+        
+        scene.add(abtMeCard1Mesh);
 
         let whoAmIMesh: THREE.Mesh;
         let topHeaderText: THREE.Mesh;
