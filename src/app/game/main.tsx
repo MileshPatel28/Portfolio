@@ -88,16 +88,22 @@ export function canvasMain() {
         // abtMeCard1Mesh.rotation.set(0,0,0.1)
 
         
-        scene.add(abtMeCard1Mesh);
+        // scene.add(abtMeCard1Mesh);
 
-        let whoAmIMesh: THREE.Mesh;
         let topHeaderText: THREE.Mesh;
         let bottomHeaderText: THREE.Mesh;
+
+        let whoAmIMesh: THREE.Mesh;
+
+        let firstNameMesh : THREE.Mesh;
+        let lastNameMesh : THREE.Mesh;
+        
 
         fontLoader.load('fonts/JetBrainsMonoThin_Regular.json', function (font) {
 
             const fontMat = new THREE.MeshBasicMaterial({ color: 'rgb(255,255,255)' })
             const fontWhoAmIMat = new THREE.MeshBasicMaterial({ color: 'rgb(255,255,255)', transparent: true })
+            const fontNameMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)', transparent: true })
             const headerFontSize = 0.4;
 
             const headerTopGeometry = new TextGeometry('Dream big..', {
@@ -171,6 +177,54 @@ export function canvasMain() {
             if (whoAmICenter) whoAmIMesh.position.x -= whoAmICenter.x;
 
             scene.add(whoAmIMesh)
+
+
+            // Full Name
+
+           const firstNameGeometry = new TextGeometry('FirstName', {
+                font: font,
+                size: 1.0,
+                depth: 0,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.01,
+                bevelSize: 0.005,
+                bevelOffset: 0,
+                bevelSegments: 3,
+            });
+
+            firstNameGeometry.computeBoundingBox();
+            const firstNameCenter = firstNameGeometry.boundingBox?.getCenter(new THREE.Vector3())
+            firstNameMesh = new THREE.Mesh(firstNameGeometry, fontNameMat)
+
+            firstNameMesh.position.set(5,1,-5)
+            firstNameMesh.rotation.set(0,0,0.025);
+            if (firstNameCenter) firstNameMesh.position.x -= firstNameCenter.x;
+
+            scene.add(firstNameMesh)
+
+
+           const lastNameGeometry = new TextGeometry('LastName', {
+                font: font,
+                size: 1.0,
+                depth: 0,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.01,
+                bevelSize: 0.005,
+                bevelOffset: 0,
+                bevelSegments: 3,
+            });
+
+            lastNameGeometry.computeBoundingBox();
+            const lastNameCenter = lastNameGeometry.boundingBox?.getCenter(new THREE.Vector3())
+            lastNameMesh = new THREE.Mesh(lastNameGeometry, fontNameMat)
+
+            lastNameMesh.position.set(5.5,-5,-5)
+            lastNameMesh.rotation.set(0,0,0.05);
+            if (lastNameCenter) lastNameMesh.position.x -= lastNameCenter.x;
+
+            scene.add(lastNameMesh)
 
         });
 
@@ -392,6 +446,10 @@ export function canvasMain() {
                 [0, 0, 0, 0, 0, 0, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], globalScrollPercent
             )
 
+            const blackHoleNameOpacity = gsap.utils.interpolate(
+                [0,0, 0, 0, 0, 0, 0, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], globalScrollPercent
+            )
+
             if (modelBlackHole) {
                 modelBlackHole.scene.position.set(0, 2, -30);
                 modelBlackHole.scene.lookAt(camera.position);
@@ -410,6 +468,20 @@ export function canvasMain() {
                     }
                 })
             }
+
+            if(firstNameMesh){
+                modifyMaterial(firstNameMesh.material,(material) => {
+                    material.opacity = blackHoleNameOpacity
+                })
+            }
+
+            if(lastNameMesh){
+                modifyMaterial(lastNameMesh.material,(material) => {
+                    material.opacity = blackHoleNameOpacity
+                })
+            }
+
+
 
 
             // const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
