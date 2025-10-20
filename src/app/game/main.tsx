@@ -71,6 +71,39 @@ export function canvasMain() {
         scene.background = new THREE.Color('rgb(21,21,21)')
 
         // Scene specific
+
+        // Timeline line
+
+        // const timelineMat = new THREE.ShaderMaterial({
+        //     transparent: true, 
+        //     uniforms: {
+        //         nearZ: { value: 0 },   
+        //         farZ: { value: 100 }   
+        //     },
+        //     vertexShader: `
+        //         varying float vZ;
+        //         void main() {
+        //         vZ = position.z; // local Z position
+        //         gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+        //         }
+        //     `,
+        //     fragmentShader: `
+        //         uniform float nearZ;
+        //         uniform float farZ;
+        //         varying float vZ;
+
+        //         void main() {
+        //         float alpha = 1.0 - smoothstep(nearZ, farZ, vZ); // fades from 1->0 along Z
+        //         gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
+        //         }
+        //     `
+        //     });
+        // const timelineGeo = new THREE.BoxGeometry(1,0.1,100)
+        // const timelineMesh = new THREE.Mesh(timelineGeo,timelineMat)
+
+        // timelineMesh.position.set(0,-3,-30)
+
+        // scene.add(timelineMesh)
         
         // About me Card 1
         // const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
@@ -333,7 +366,7 @@ export function canvasMain() {
 
 
             if(mouseDiv){
-                const mouseDivDefaultSize = 75;
+                const mouseDivDefaultSize = 75*2;
                 const mouseDelta = new THREE.Vector2(mouseX - oldMousePos.x,oldMousePos.y - mouseY)
 
                 const mouseDivSize = mouseDivDefaultSize*mouseDelta.length()/100 + 50;
