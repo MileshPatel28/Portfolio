@@ -55,7 +55,7 @@ export function canvasMain() {
 
         // Initializer
         scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 
 
         renderer = new THREE.WebGPURenderer({
@@ -71,6 +71,11 @@ export function canvasMain() {
         scene.background = new THREE.Color('rgb(21,21,21)')
 
         // Scene specific
+        
+        // About me Card 1
+
+        // const abtMeCard1Geo = new 
+
 
         let whoAmIMesh: THREE.Mesh;
         let topHeaderText: THREE.Mesh;
@@ -156,7 +161,7 @@ export function canvasMain() {
 
         });
 
-        // Instantiate a gltfLoader
+        // Load models
 
 
         let modelDBUp: GLTF;
@@ -190,7 +195,6 @@ export function canvasMain() {
         )
 
 
-
         const scenePass = pass(scene, camera);
         scenePass.setMRT(mrt({
             output,
@@ -204,13 +208,6 @@ export function canvasMain() {
         postProcessing = new THREE.PostProcessing(renderer);
         postProcessing.outputNode = outputPass.add(bloomPass);
 
-
-        // Position camera
-
-        camera.position.y = cameraTransforms.pY;
-        camera.position.z = cameraTransforms.pZ;
-
-        
 
         mainCanvas.style.opacity = '0';
         gsap.to(mainCanvas, {
@@ -253,7 +250,7 @@ export function canvasMain() {
 
 
 
-        const spaceWarpLines: THREE.Line[] = [];
+        const spaceWarpLines: THREE.Mesh[] = [];
         let lastLineSpawned = 0;
 
         const oldMousePos = new THREE.Vector2(mouseX,mouseY)
@@ -471,8 +468,10 @@ export function canvasMain() {
                     const randomY = getRandomArbitrary(-140, 140)
                     const initZ = -300;
 
-                    const lineMat = new THREE.LineBasicMaterial({
-                        color: 'rgba(64, 147, 255, 1)'
+                    const lineMat = new THREE.MeshStandardMaterial({
+                        color: 'rgba(64, 147, 255, 1)',
+                        emissive: 'rgba(64, 147, 255, 1)',
+                        emissiveIntensity: 32
                     });
 
 
@@ -480,10 +479,14 @@ export function canvasMain() {
                     points.push(new THREE.Vector3(randomX, randomY, initZ));
                     points.push(new THREE.Vector3(randomX, randomY, initZ + 10));
 
-                    const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-                    const line = new THREE.Line(lineGeo, lineMat)
+                    const lineGeo = new THREE.BoxGeometry(0.1,0.1,10)
+                    const line = new THREE.Mesh(lineGeo, lineMat)
+
+    
+                    line.position.set(randomX,randomY,-500)
 
                     scene.add(line);
+
                     spaceWarpLines.push(line)
 
 
@@ -496,7 +499,7 @@ export function canvasMain() {
 
                 line.position.z += 10;
 
-                if (line.position.z <= -10) {
+                if (line.position.z >= 50) {
                     scene.remove(line)
                     spaceWarpLines.splice(i, 1);
                     i--;
