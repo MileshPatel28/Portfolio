@@ -6,6 +6,14 @@ export default function Home() {
         {/* Test Font */}
       </div>
 
+      <div id="mouseDiv" style={{
+        height: '25px',
+        width: '25px',
+        backgroundColor: 'rgb(255,255,255)',
+        borderRadius: '50%',
+        display: 'inline-block',
+      }}></div>
+
     </div>
   );
 }

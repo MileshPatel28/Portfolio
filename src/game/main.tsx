@@ -15,6 +15,7 @@ let mainCanvas: HTMLCanvasElement;
 
 let postProcessing: THREE.PostProcessing;
 
+
 let mouseX = 0;
 let mouseY = 0;
 
@@ -37,12 +38,13 @@ export function canvasMain() {
     const totalScroll = document.body.scrollHeight;
 
     mainCanvas = document.getElementById('mainScene') as HTMLCanvasElement
+    const mouseDiv = document.getElementById('mouseDiv') as HTMLDivElement
 
     if (mainCanvas != null) {
         const gltfLoader = new GLTFLoader();
 
         const dracoLoader = new DRACOLoader();
-        dracoLoader.setDecoderPath('/examples/jsm/libs/draco/');
+        dracoLoader.setDecoderPath('examples/jsm/libs/draco/');
         gltfLoader.setDRACOLoader(dracoLoader);
 
         const fontLoader = new FontLoader();
