@@ -532,8 +532,6 @@ export function canvasMain() {
                 [0, 0, 0, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], globalScrollPercent
             )
 
-
-
             const blackHoleInclination = gsap.utils.interpolate(
                 [0, 0, 0, 0, 0, 0, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], globalScrollPercent
             )
@@ -580,7 +578,7 @@ export function canvasMain() {
             // About me tweens
 
             const aboutMePositionZ = gsap.utils.interpolate(
-                [-300, -300, -300, -300, -300, -150, -40, -20, 0, 30, 40, 50, 60, 70, 70, 70, 70, 70, 70, 70], globalScrollPercent
+                [-300, -300, -300, -300, -300, -150, -40, -20, 0, 30, 40, 50, 60, 70, 80, 80, 80, 80, 80, 80], globalScrollPercent
             )
 
             sceneAboutMe.position.z = aboutMePositionZ;
@@ -651,9 +649,6 @@ export function canvasMain() {
 
             const movementConstant = 0.125;
 
-            //  mouseX = ((event.clientX / window.innerWidth) - 0.5) * movementConstant;
-            //     mouseY = -((event.clientY / window.innerWidth) - 0.5) * movementConstant;
-
             if (camera.position.z == 5) {
                 camera.lookAt(new THREE.Vector3(
                     ((mouseX/ window.innerWidth) - 0.5) * movementConstant,
@@ -664,14 +659,14 @@ export function canvasMain() {
             }
 
             const randomXMinSpaceWarp = gsap.utils.interpolate(
-                [-250, -250, -250, -250, -250, -250, -250, -30, -30, -30], globalScrollPercent
+                [-110, -110, -110, -110, -250, -250, -250, -30, -30, -30], globalScrollPercent
             )
 
             const randomXMaxSpaceWarp = gsap.utils.interpolate(
-                [30, 30, 30, 30, 30, 30, 30, 270, 270, 270], globalScrollPercent
+                [110, 110, 110, 110, 30, 30, 30, 270, 270, 270], globalScrollPercent
             )
 
-            if (cameraTransforms.pY <= -7) {
+            if (cameraTransforms.pY <= 1.8) {
 
                 if (Date.now() - lastLineSpawned % 30) {
 
