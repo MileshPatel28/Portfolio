@@ -185,7 +185,7 @@ export function canvasMain() {
 
             // Full Name
 
-           const firstNameGeometry = new TextGeometry('FirstName', {
+           const firstNameGeometry = new TextGeometry('Milesh', {
                 font: font,
                 size: 1.0,
                 depth: 0,
@@ -208,7 +208,7 @@ export function canvasMain() {
             scene.add(firstNameMesh)
 
 
-           const lastNameGeometry = new TextGeometry('LastName', {
+           const lastNameGeometry = new TextGeometry('Patel', {
                 font: font,
                 size: 1.0,
                 depth: 0,
