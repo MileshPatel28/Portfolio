@@ -807,8 +807,14 @@ export function canvasMain() {
                 }
             }
 
+            // Debug 
+            let numOfMeshes = 0;    
+            scene.traverse( function( child ) {
+                if( child instanceof THREE.Mesh )
+                    numOfMeshes++;
+            } );
 
-
+            console.log(numOfMeshes)
 
             render();
         }
