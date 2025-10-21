@@ -318,47 +318,105 @@ export function canvasMain() {
         });
         const cubeCamera = new THREE.CubeCamera(0.1, 1000, cubeRenderTarget);
         cubeCamera.position.set(0,0,15)
+        const textureLoader = new THREE.TextureLoader();
+
         scene.add(cubeCamera);
 
-        const demoColor = 'rgba(91, 106, 96, 1)'
+        const listColors = [
+            'rgba(91, 106, 96, 1)',
+            'rgba(123, 155, 165, 1)',
+            'rgba(67, 67, 67, 1)',
+            'rgba(199, 165, 134, 1)',
+        ]
+        
+        const listImagePaths = [
+            'textures/technologiesIcon/supabase.png',
+            'textures/technologiesIcon/flutter.png',
+            'textures/technologiesIcon/git.png',
+            'textures/technologiesIcon/java.png',
+        ]
 
-        const roundBoxDemoGeo = new RoundedBoxGeometry(3,5,5,10,1)
-        const roundBoxDemoMat = new THREE.MeshStandardMaterial({
-            envMap: cubeRenderTarget.texture,
-            metalness: 0.5,
-            roughness: 0.0,
-            color: demoColor,
-            emissive: demoColor,
-            emissiveIntensity: 0.015
-        });
-        const roundBoxDemoMesh = new THREE.Mesh(roundBoxDemoGeo,roundBoxDemoMat);
+        let zBoxes = 32;
+        let yBoxes = -15;
 
-        const textureLoader = new THREE.TextureLoader();
-        const frontImage = textureLoader.load('textures/technologiesIcon/supabase.png');
+        for(let i = 0; i < listImagePaths.length; i++){
+            const boxColor = listColors[i]
+            const frontImage = textureLoader.load(listImagePaths[i]); 
 
-        const planeGeo = new THREE.PlaneGeometry(3, 3);
-        const planeMat = new THREE.MeshStandardMaterial({
-            map: frontImage,
-            emissive: new THREE.Color('white'),
-            emissiveMap: frontImage,
-            emissiveIntensity: 0.6,
-            transparent: true,
-        });
+            const roundedBoxGeo = new RoundedBoxGeometry(3,5,5,10,1)
+            const roundBoxMat = new THREE.MeshStandardMaterial({
+                envMap: cubeRenderTarget.texture,
+                metalness: 0.5,
+                roughness: 0.0,
+                color: boxColor,
+                emissive: boxColor,
+                emissiveIntensity: 0.015
+            });
+            
+            const imagePlaneGeo = new THREE.PlaneGeometry(3, 3);
+            const imagePlaneMat = new THREE.MeshStandardMaterial({
+                map: frontImage,
+                emissive: new THREE.Color('white'),
+                emissiveMap: frontImage,
+                emissiveIntensity: 0.6,
+                transparent: true,
+            });
 
-        const plane = new THREE.Mesh(planeGeo, planeMat);
-        plane.position.set(-1.6,0,0)
-        plane.rotation.set(0,-Math.PI/2,0)
-        roundBoxDemoMesh.add(plane);
+            const roundBoxMesh = new THREE.Mesh(roundedBoxGeo,roundBoxMat);
+            const imagePlane = new THREE.Mesh(imagePlaneGeo, imagePlaneMat);
 
-        roundBoxDemoMesh.position.set(0,-15,32)
+            roundBoxMesh.position.set(0,yBoxes,zBoxes)
+            imagePlane.position.set(-1.6,yBoxes,zBoxes)
+            imagePlane.rotation.set(0,-Math.PI/2,0)
 
-        sceneTechnologies.add(roundBoxDemoMesh)
+            sceneTechnologies.add(roundBoxMesh)
+            sceneTechnologies.add(imagePlane)
+
+            yBoxes += 6;
+
+            if((i+1) % 3 == 0){
+                yBoxes = -15;
+                zBoxes -= 7
+            }
+
+        }
+
+        // const demoColor = 'rgba(91, 106, 96, 1)'
+
+        // const roundBoxDemoGeo = new RoundedBoxGeometry(3,5,5,10,1)
+        // const roundBoxDemoMat = new THREE.MeshStandardMaterial({
+        //     envMap: cubeRenderTarget.texture,
+        //     metalness: 0.5,
+        //     roughness: 0.0,
+        //     color: demoColor,
+        //     emissive: demoColor,
+        //     emissiveIntensity: 0.015
+        // });
+        // const roundBoxDemoMesh = new THREE.Mesh(roundBoxDemoGeo,roundBoxDemoMat);
+
+
+        // const frontImage = textureLoader.load('textures/technologiesIcon/supabase.png');
+
+        // const planeGeo = new THREE.PlaneGeometry(3, 3);
+        // const planeMat = new THREE.MeshStandardMaterial({
+        //     map: frontImage,
+        //     emissive: new THREE.Color('white'),
+        //     emissiveMap: frontImage,
+        //     emissiveIntensity: 0.6,
+        //     transparent: true,
+        // });
+
+        // const plane = new THREE.Mesh(planeGeo, planeMat);
+        // plane.position.set(-1.6,0,0)
+        // plane.rotation.set(0,-Math.PI/2,0)
+        // roundBoxDemoMesh.add(plane);
+
+        // roundBoxDemoMesh.position.set(0,-15,32)
+
+        // sceneTechnologies.add(roundBoxDemoMesh)
 
         scene.add(sceneTechnologies)
 
-        const light = new THREE.PointLight( 0xff0000, 1, 100 );
-
-        scene.add( light );
 
         // Load models
 
@@ -633,10 +691,6 @@ export function canvasMain() {
                 [0, 0, 0, 0.7, 0.7, 0.7, 0.7, -0.7, -0.7, -0.7], globalScrollPercent
             )
 
-
-
-
-            light.position.set( cameraTransforms.pX, cameraTransforms.pY, cameraTransforms.pZ );
             camera.position.set( cameraTransforms.pX, cameraTransforms.pY, cameraTransforms.pZ );
 
 
