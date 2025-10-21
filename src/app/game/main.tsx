@@ -327,6 +327,20 @@ export function canvasMain() {
             'rgba(123, 155, 165, 1)',
             'rgba(67, 67, 67, 1)',
             'rgba(199, 165, 134, 1)',
+            'rgba(123, 97, 138, 1)',
+            'rgba(97, 119, 138, 1)',
+            'rgba(166, 98, 98, 1)',
+            'rgba(94, 149, 164, 1)',
+            'rgba(164, 164, 94, 1)',
+            'rgba(94, 149, 164, 1)',
+            'rgba(94, 100, 164, 1)',
+            'rgba(164, 131, 94, 1)',
+            'rgba(135, 94, 164, 1)',
+            'rgba(113, 136, 140, 1)',
+            'rgba(113, 136, 140, 1)',
+            'rgba(130, 169, 213, 1)',
+            'rgba(147, 147, 147, 1)',
+            'rgba(234, 150, 150, 1)',
         ]
         
         const listImagePaths = [
@@ -334,10 +348,25 @@ export function canvasMain() {
             'textures/technologiesIcon/flutter.png',
             'textures/technologiesIcon/git.png',
             'textures/technologiesIcon/java.png',
+            'textures/technologiesIcon/cSharp.png',
+            'textures/technologiesIcon/cpp.png',
+            'textures/technologiesIcon/html.png',
+            'textures/technologiesIcon/css.png',
+            'textures/technologiesIcon/javascript.png',
+            'textures/technologiesIcon/godot.png',
+            'textures/technologiesIcon/lua.png',
+            'textures/technologiesIcon/monogames.png',
+            'textures/technologiesIcon/net.png',
+            'textures/technologiesIcon/php.png',
+            'textures/technologiesIcon/postgresSQL.png',
+            'textures/technologiesIcon/python.png',
+            'textures/technologiesIcon/unity.png',
+            'textures/technologiesIcon/webgl.png',
+
         ]
 
         let zBoxes = 32;
-        let yBoxes = -15;
+        let yBoxes = -17;
 
         for(let i = 0; i < listImagePaths.length; i++){
             const boxColor = listColors[i]
@@ -353,12 +382,17 @@ export function canvasMain() {
                 emissiveIntensity: 0.015
             });
             
-            const imagePlaneGeo = new THREE.PlaneGeometry(3, 3);
+            let imagePlaneGeo = new THREE.PlaneGeometry(3, 3);
+
+            if(i == 4){
+                imagePlaneGeo = new THREE.PlaneGeometry(5, 5);
+            }
+
             const imagePlaneMat = new THREE.MeshStandardMaterial({
                 map: frontImage,
                 emissive: new THREE.Color('white'),
                 emissiveMap: frontImage,
-                emissiveIntensity: 0.6,
+                emissiveIntensity: 0.3,
                 transparent: true,
             });
 
@@ -366,17 +400,17 @@ export function canvasMain() {
             const imagePlane = new THREE.Mesh(imagePlaneGeo, imagePlaneMat);
 
             roundBoxMesh.position.set(0,yBoxes,zBoxes)
-            imagePlane.position.set(-1.6,yBoxes,zBoxes)
+            imagePlane.position.set(-1.55,yBoxes,zBoxes)
             imagePlane.rotation.set(0,-Math.PI/2,0)
 
             sceneTechnologies.add(roundBoxMesh)
             sceneTechnologies.add(imagePlane)
 
-            yBoxes += 6;
+            yBoxes += 8;
 
             if((i+1) % 3 == 0){
-                yBoxes = -15;
-                zBoxes -= 7
+                yBoxes = -17;
+                zBoxes -= 9
             }
 
         }
