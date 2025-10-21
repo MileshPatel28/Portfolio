@@ -436,9 +436,7 @@ export function canvasMain() {
                 mouseDiv.style.top = (mouseY - mouseDivSize/2).toString() + 'px';
                 mouseDiv.style.left = (mouseX - mouseDivSize/2).toString() + 'px';
 
-          
-
-                console.log(mouseDelta.length);
+        
 
 
 
@@ -534,13 +532,13 @@ export function canvasMain() {
                 [0, 0, 0, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], globalScrollPercent
             )
 
+
+
             const blackHoleInclination = gsap.utils.interpolate(
                 [0, 0, 0, 0, 0, 0, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], globalScrollPercent
             )
 
-            const blackHoleNameOpacity = gsap.utils.interpolate(
-                [0,0, 0, 0, 0, 0, 0, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], globalScrollPercent
-            )
+
 
             if (modelBlackHole) {
                 modelBlackHole.scene.position.set(0, 2, -30);
@@ -560,6 +558,12 @@ export function canvasMain() {
                     }
                 })
             }
+            
+
+            // About me
+            const blackHoleNameOpacity = gsap.utils.interpolate(
+                [0,0, 0, 0, 0, 0, 0, 0.5, 1, 1, 1, 1, 0.5, 0, 0, 0, 0, 0, 0, 0], globalScrollPercent
+            )
 
             if(firstNameMesh){
                 modifyMaterial(firstNameMesh.material,(material) => {
@@ -574,11 +578,27 @@ export function canvasMain() {
             }
 
             // About me tweens
+
             const aboutMePositionZ = gsap.utils.interpolate(
-                [-300, -300, -300, -300, -300, -300, -150, -20, 0, 30, 40, 50, 60, 60, 60, 60, 60, 60, 60, 60], globalScrollPercent
+                [-300, -300, -300, -300, -300, -150, -40, -20, 0, 30, 40, 50, 60, 70, 70, 70, 70, 70, 70, 70], globalScrollPercent
             )
 
             sceneAboutMe.position.z = aboutMePositionZ;
+
+            sceneAboutMe.traverse((child) => {
+                if(child instanceof THREE.Mesh){
+                    const zPosChild = child.position.z + sceneAboutMe.position.z;
+
+                    if(child == aboutMeMeshes[0].mesh){
+                        console.log(zPosChild);
+                    }
+
+                    modifyMaterial(child.material, (material) => {
+                        material.transparent = true;
+                        material.opacity = (zPosChild - 4)/16;
+                    })
+                }
+            })
 
             // const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
             const whoAmIOpacity = gsap.utils.interpolate(
@@ -596,19 +616,22 @@ export function canvasMain() {
 
             // Camera transforms
             cameraTransforms.pX = gsap.utils.interpolate(
-                [0, 0, 0, 15, 15, 15, 15, 15, 15, 15], globalScrollPercent
+                [0, 0, 0, 15, 15, 15, 15, -17, -17, -17], globalScrollPercent
             )
 
-            cameraTransforms.pY = gsap.utils.interpolate(
-                [2, 2, 2, -10, -10, -10, -10, 10, 10, 10], globalScrollPercent
-            )
+
+            cameraTransforms.pY = gsap.utils.interpolate( // 3 at end = when text end
+                [2, 2, 2, -10, -10, -10, -10, -10, -10, -10], globalScrollPercent
+            )   
+            
             cameraTransforms.pZ = gsap.utils.interpolate(
                 [5, 0, 0, 40, 40, 40, 40, 40, 40, 40], globalScrollPercent
             )
 
             cameraTransforms.rY = gsap.utils.interpolate(
-                [0, 0, 0, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7], globalScrollPercent
+                [0, 0, 0, 0.7, 0.7, 0.7, 0.7, -0.7, -0.7, -0.7], globalScrollPercent
             )
+
 
 
 
@@ -640,15 +663,22 @@ export function canvasMain() {
                 ));
             }
 
-            if (cameraTransforms.rY >= 0.5) {
+            const randomXMinSpaceWarp = gsap.utils.interpolate(
+                [-250, -250, -250, -250, -250, -250, -250, -30, -30, -30], globalScrollPercent
+            )
 
-                if (Date.now() - lastLineSpawned % 125) {
+            const randomXMaxSpaceWarp = gsap.utils.interpolate(
+                [30, 30, 30, 30, 30, 30, 30, 270, 270, 270], globalScrollPercent
+            )
+
+            if (cameraTransforms.pY <= -7) {
+
+                if (Date.now() - lastLineSpawned % 30) {
 
                     lastLineSpawned = Date.now();
 
-                    const randomX = getRandomArbitrary(-250, 30)
+                    const randomX = getRandomArbitrary(randomXMinSpaceWarp, randomXMaxSpaceWarp)
                     const randomY = getRandomArbitrary(-140, 140)
-                    const initZ = -300;
 
                     const lineMat = new THREE.MeshStandardMaterial({
                         color: 'rgba(64, 147, 255, 1)',
