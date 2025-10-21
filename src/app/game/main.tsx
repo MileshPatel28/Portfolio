@@ -7,6 +7,7 @@ import { DRACOLoader, FontLoader } from 'three/examples/jsm/Addons.js';
 import { pass, mrt, output, emissive } from 'three/tsl';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 
 let scene: THREE.Scene
 
@@ -75,20 +76,6 @@ export function canvasMain() {
         // About me seciton
 
         const sceneAboutMe = new THREE.Scene();
-
-        // const abtMeCard1Geo = new THREE.BoxGeometry(0.5,8,10)
-        // const abtMeCard1Mat = new THREE.MeshStandardMaterial({
-        //     color: 'rgba(42, 42, 42, 1)',
-        //     roughness: 1,  
-        // })
-        // const abtMeCard1Mesh = new THREE.Mesh(abtMeCard1Geo,abtMeCard1Mat);
-
-        // abtMeCard1Mesh.position.set(4,-10,32)
-        // abtMeCard1Mesh.rotation.set(0,0,0.1)
-        
-        // sceneAboutMe.add(abtMeCard1Mesh);
-
-
         scene.add(sceneAboutMe)
 
         let topHeaderText: THREE.Mesh;
@@ -185,7 +172,7 @@ export function canvasMain() {
 
             // Full Name
 
-           const firstNameGeometry = new TextGeometry('Milesh', {
+           const firstNameGeometry = new TextGeometry('FisrtName', {
                 font: font,
                 size: 1.0,
                 depth: 0,
@@ -208,7 +195,7 @@ export function canvasMain() {
             scene.add(firstNameMesh)
 
 
-           const lastNameGeometry = new TextGeometry('Patel', {
+           const lastNameGeometry = new TextGeometry('LastName', {
                 font: font,
                 size: 1.0,
                 depth: 0,
@@ -233,18 +220,18 @@ export function canvasMain() {
 
             // About Me meshes
             const aboutMeTextes = [
-                "19 years old",
-                "Montreal, Québec",
-                "Open Learner",
-                "Coding since a kid",
-                "Computer Enthusiast",
-                "Game Developper",
-                "Mobile App Programmer",
-                "Web Developper",
-                "Video Game Mod Creator",
-                "Intermediate Artist",
-                "Pixel artist",
-                "Intermediate 3D Modeler",
+                "test",
+                "test",
+                "test",
+                "test",
+                "test",
+                "test",
+                "test",
+                "test",
+                "test",
+                "test",
+                "test",
+                "test",
             ]
 
 
@@ -320,8 +307,22 @@ export function canvasMain() {
 
         });
 
-        // Load models
+        // Technologies I know section
 
+        const sceneTechnologies = new THREE.Scene();
+
+        const roundBoxDemoGeo = new RoundedBoxGeometry(5,5,5,10,1)
+        const roundBoxDemoMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)'})
+        const roundBoxDemoMesh = new THREE.Mesh(roundBoxDemoGeo,roundBoxDemoMat);
+
+        roundBoxDemoMesh.position.set(0,0,-30)
+
+        sceneTechnologies.add(roundBoxDemoMesh)
+
+        scene.add(sceneTechnologies)
+
+
+        // Load models
 
         let modelDBUp: GLTF;
         gltfLoader.load(
@@ -437,43 +438,7 @@ export function canvasMain() {
                 mouseDiv.style.left = (mouseX - mouseDivSize/2).toString() + 'px';
 
         
-
-
-
                 oldMousePos.set(mouseX,mouseY)
-
-                // const mousePosition = new THREE.Vector2(mouseX,mouseY)
-                // const angle = mouseDelta.angle()*180/Math.PI
-
-                // const trailingVector = new THREE.Vector2(
-                //     -Math.sin(angle * Math.PI / 180)*4,
-                //     -Math.cos(angle * Math.PI / 180)*4
-                // )
-
-                // const now = Date.now();
-
-                // if ((now - lastEffectSpawned) >= 200) {
-                //     lastEffectSpawned = now;
-
-                //     const mouseDivEffect = document.createElement('div');
-
-                //     mouseDivEffect.className = 'invertDivEffect'
-                //     mouseDivEffect.style.top = mousePosition.add(trailingVector).y.toString() + 'px';
-                //     mouseDivEffect.style.left = mousePosition.add(trailingVector).x.toString() + 'px';
-                //     mouseDivEffect.style.zIndex = mouseEffectDivs.length.toString();
-                //     mainPageElement.append(mouseDivEffect)
-
-                //     mouseEffectDivs.push({
-                //         trailingVector: trailingVector,
-                //         div: mouseDivEffect
-                //     })
-                // }
-
-                // mouseEffectDivs.forEach((obj) => {
-                //     obj.div.style.top = (parseFloat(obj.div.style.top) - obj.trailingVector.y).toString() + 'px'
-                //     obj.div.style.left = (parseFloat(obj.div.style.left) - obj.trailingVector.x).toString() + 'px'
-                // })
-
             }
 
 
