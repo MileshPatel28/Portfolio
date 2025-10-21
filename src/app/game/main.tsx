@@ -707,6 +707,12 @@ export function canvasMain() {
                 [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], globalScrollPercent
             )
 
+            const technologiesSceneZ = gsap.utils.interpolate(
+                [-300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -30, 0, 30, 60, 90, 0], globalScrollPercent
+            )
+
+            sceneTechnologies.position.set(0,0,technologiesSceneZ)
+
 
             if (whoAmIMesh) {
                 modifyMaterial(whoAmIMesh.material, (material) => {
