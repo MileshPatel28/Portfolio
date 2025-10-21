@@ -172,7 +172,7 @@ export function canvasMain() {
 
             // Full Name
 
-           const firstNameGeometry = new TextGeometry('FisrtName', {
+           const firstNameGeometry = new TextGeometry('Milesh', {
                 font: font,
                 size: 1.0,
                 depth: 0,
@@ -195,7 +195,7 @@ export function canvasMain() {
             scene.add(firstNameMesh)
 
 
-           const lastNameGeometry = new TextGeometry('LastName', {
+           const lastNameGeometry = new TextGeometry('Patel', {
                 font: font,
                 size: 1.0,
                 depth: 0,
@@ -220,18 +220,18 @@ export function canvasMain() {
 
             // About Me meshes
             const aboutMeTextes = [
-                "test",
-                "test",
-                "test",
-                "test",
-                "test",
-                "test",
-                "test",
-                "test",
-                "test",
-                "test",
-                "test",
-                "test",
+                "19 years old",
+                "Montreal, Québec",
+                "Open Learner",
+                "Coding since a kid",
+                "Computer Enthusiast",
+                "Game Developper",
+                "Mobile App Programmer",
+                "Web Developper",
+                "Video Game Mod Creator",
+                "Intermediate Artist",
+                "Pixel artist",
+                "Intermediate 3D Modeler",
             ]
 
 
@@ -311,16 +311,54 @@ export function canvasMain() {
 
         const sceneTechnologies = new THREE.Scene();
 
-        const roundBoxDemoGeo = new RoundedBoxGeometry(5,5,5,10,1)
-        const roundBoxDemoMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)'})
+        const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, {
+            format: THREE.RGBAFormat,
+            generateMipmaps: true,
+            minFilter: THREE.LinearMipmapLinearFilter,
+        });
+        const cubeCamera = new THREE.CubeCamera(0.1, 1000, cubeRenderTarget);
+        cubeCamera.position.set(0,0,15)
+        scene.add(cubeCamera);
+
+        const demoColor = 'rgba(91, 106, 96, 1)'
+
+        const roundBoxDemoGeo = new RoundedBoxGeometry(3,5,5,10,1)
+        const roundBoxDemoMat = new THREE.MeshStandardMaterial({
+            envMap: cubeRenderTarget.texture,
+            metalness: 0.5,
+            roughness: 0.0,
+            color: demoColor,
+            emissive: demoColor,
+            emissiveIntensity: 0.015
+        });
         const roundBoxDemoMesh = new THREE.Mesh(roundBoxDemoGeo,roundBoxDemoMat);
 
-        roundBoxDemoMesh.position.set(0,0,-30)
+        const textureLoader = new THREE.TextureLoader();
+        const frontImage = textureLoader.load('textures/technologiesIcon/supabase.png');
+
+        const planeGeo = new THREE.PlaneGeometry(3, 3);
+        const planeMat = new THREE.MeshStandardMaterial({
+            map: frontImage,
+            emissive: new THREE.Color('white'),
+            emissiveMap: frontImage,
+            emissiveIntensity: 0.6,
+            transparent: true,
+        });
+
+        const plane = new THREE.Mesh(planeGeo, planeMat);
+        plane.position.set(-1.6,0,0)
+        plane.rotation.set(0,-Math.PI/2,0)
+        roundBoxDemoMesh.add(plane);
+
+        roundBoxDemoMesh.position.set(0,-15,32)
 
         sceneTechnologies.add(roundBoxDemoMesh)
 
         scene.add(sceneTechnologies)
 
+        const light = new THREE.PointLight( 0xff0000, 1, 100 );
+
+        scene.add( light );
 
         // Load models
 
@@ -598,17 +636,16 @@ export function canvasMain() {
 
 
 
+            light.position.set( cameraTransforms.pX, cameraTransforms.pY, cameraTransforms.pZ );
+            camera.position.set( cameraTransforms.pX, cameraTransforms.pY, cameraTransforms.pZ );
 
-            camera.position.x = cameraTransforms.pX;
-            camera.position.y = cameraTransforms.pY
-            camera.position.z = cameraTransforms.pZ;
 
             // Adjust depending on percentage of scroll instead of camera
             const cameraShakeConstant = 250;
 
-            camera.rotation.x = (cameraTransforms.rY >= 0.7 ? Math.random() / cameraShakeConstant : 0)
-            camera.rotation.y = cameraTransforms.rY + (cameraTransforms.rY >= 0.7 ? Math.random() / cameraShakeConstant : 0);
-            camera.rotation.z = (cameraTransforms.rY >= 0.7 ? Math.random() / cameraShakeConstant : 0)
+            camera.rotation.x = (cameraTransforms.pY <= 1.8 ? Math.random() / cameraShakeConstant : 0)
+            camera.rotation.y = cameraTransforms.rY + (cameraTransforms.pY <= 1.8 ? Math.random() / cameraShakeConstant : 0);
+            camera.rotation.z = (cameraTransforms.pY <= 1.8  ? Math.random() / cameraShakeConstant : 0)
 
             // Must fix
 
@@ -680,6 +717,7 @@ export function canvasMain() {
         }
 
         function render() {
+            cubeCamera.update(renderer, scene);
             postProcessing.render();
         }
 
