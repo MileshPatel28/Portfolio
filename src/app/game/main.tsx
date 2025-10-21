@@ -691,10 +691,6 @@ export function canvasMain() {
                 if(child instanceof THREE.Mesh){
                     const zPosChild = child.position.z + sceneAboutMe.position.z;
 
-                    if(child == aboutMeMeshes[0].mesh){
-                        console.log(zPosChild);
-                    }
-
                     modifyMaterial(child.material, (material) => {
                         material.transparent = true;
                         material.opacity = (zPosChild - 4)/16;
@@ -702,16 +698,43 @@ export function canvasMain() {
                 }
             })
 
-            // const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
-            const whoAmIOpacity = gsap.utils.interpolate(
-                [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], globalScrollPercent
+            // Technologies animations
+
+
+            const technologiesTextOpacity = gsap.utils.interpolate(
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1], globalScrollPercent
             )
+
+            modifyMaterial(technologiesTextMesh.material,(material) => {
+                material.transparent = true;
+                material.opacity = technologiesTextOpacity;
+            })
+
+
 
             const technologiesSceneZ = gsap.utils.interpolate(
                 [-300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -30, 0, 30, 60, 90, 0], globalScrollPercent
             )
 
             sceneTechnologies.position.set(0,0,technologiesSceneZ)
+
+            sceneTechnologies.traverse((child) => {
+                if(child instanceof THREE.Mesh){
+                    const zPosChild = child.position.z + sceneTechnologies.position.z;
+
+                    modifyMaterial(child.material, (material) => {
+                        material.transparent = true;
+                        material.opacity = (zPosChild + 32)/16;
+                    })
+                }
+            })
+
+
+            // const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
+            const whoAmIOpacity = gsap.utils.interpolate(
+                [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], globalScrollPercent
+            )
+
 
 
             if (whoAmIMesh) {
