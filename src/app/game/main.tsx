@@ -76,7 +76,11 @@ export function canvasMain() {
         // About me seciton
 
         const sceneAboutMe = new THREE.Scene();
+        const sceneTechnologies = new THREE.Scene();
+
         scene.add(sceneAboutMe)
+        scene.add(sceneTechnologies)
+
 
         let topHeaderText: THREE.Mesh;
         let bottomHeaderText: THREE.Mesh;
@@ -85,6 +89,8 @@ export function canvasMain() {
 
         let firstNameMesh : THREE.Mesh;
         let lastNameMesh : THREE.Mesh;
+
+        let technologiesTextMesh : THREE.Mesh;
 
 
         const aboutMeMeshes: {center: THREE.Vector3, mesh: THREE.Mesh}[] = []
@@ -305,11 +311,49 @@ export function canvasMain() {
             aboutMeMeshes[11].mesh.position.set(0,-8,-12)
             aboutMeMeshes[11].mesh.rotation.set(0,Math.PI/2,0)
 
+
+            // Technologies text
+
+
+            
+           const technologiesTextGeo = new TextGeometry('Technologies', {
+                font: font,
+                size: 3.0,
+                depth: 0,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.01,
+                bevelSize: 0.005,
+                bevelOffset: 0,
+                bevelSegments: 3,
+            });
+
+            const textColor = 'rgb(255,255,255)'
+
+            const technologiesTextMat = new THREE.MeshStandardMaterial({
+                envMap: cubeRenderTarget.texture,
+                metalness: 1,
+                roughness: 0.0,
+                color: textColor,
+                emissive: textColor,
+                emissiveIntensity: 0.015
+            });
+
+            technologiesTextGeo.computeBoundingBox();
+            const technologiesTextCenter = technologiesTextGeo.boundingBox?.getCenter(new THREE.Vector3())
+            technologiesTextMesh = new THREE.Mesh(technologiesTextGeo, technologiesTextMat)
+
+            technologiesTextMesh.position.set(3,-17,0)
+            technologiesTextMesh.rotation.set(-Math.PI / 2, 0, -Math.PI/2);
+            if (technologiesTextCenter) technologiesTextMesh.position.x -= technologiesTextCenter.x;
+
+            scene.add(technologiesTextMesh)
+
+
         });
 
         // Technologies I know section
 
-        const sceneTechnologies = new THREE.Scene();
 
         const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, {
             format: THREE.RGBAFormat,
@@ -390,9 +434,9 @@ export function canvasMain() {
 
             const imagePlaneMat = new THREE.MeshStandardMaterial({
                 map: frontImage,
-                emissive: new THREE.Color('white'),
+                emissive: boxColor,
                 emissiveMap: frontImage,
-                emissiveIntensity: 0.3,
+                emissiveIntensity: 2,
                 transparent: true,
             });
 
@@ -415,41 +459,6 @@ export function canvasMain() {
 
         }
 
-        // const demoColor = 'rgba(91, 106, 96, 1)'
-
-        // const roundBoxDemoGeo = new RoundedBoxGeometry(3,5,5,10,1)
-        // const roundBoxDemoMat = new THREE.MeshStandardMaterial({
-        //     envMap: cubeRenderTarget.texture,
-        //     metalness: 0.5,
-        //     roughness: 0.0,
-        //     color: demoColor,
-        //     emissive: demoColor,
-        //     emissiveIntensity: 0.015
-        // });
-        // const roundBoxDemoMesh = new THREE.Mesh(roundBoxDemoGeo,roundBoxDemoMat);
-
-
-        // const frontImage = textureLoader.load('textures/technologiesIcon/supabase.png');
-
-        // const planeGeo = new THREE.PlaneGeometry(3, 3);
-        // const planeMat = new THREE.MeshStandardMaterial({
-        //     map: frontImage,
-        //     emissive: new THREE.Color('white'),
-        //     emissiveMap: frontImage,
-        //     emissiveIntensity: 0.6,
-        //     transparent: true,
-        // });
-
-        // const plane = new THREE.Mesh(planeGeo, planeMat);
-        // plane.position.set(-1.6,0,0)
-        // plane.rotation.set(0,-Math.PI/2,0)
-        // roundBoxDemoMesh.add(plane);
-
-        // roundBoxDemoMesh.position.set(0,-15,32)
-
-        // sceneTechnologies.add(roundBoxDemoMesh)
-
-        scene.add(sceneTechnologies)
 
 
         // Load models
