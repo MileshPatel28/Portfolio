@@ -1,1 +1,0 @@
-(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,52683,e=>{"use strict";e.s(["default",()=>i]);var t=e.i(43476);function i(){return(0,t.jsx)("div",{children:(0,t.jsx)("div",{className:"font-mono text-5xl grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-16 pb-20 gap-16 sm:p-60"})})}}]);

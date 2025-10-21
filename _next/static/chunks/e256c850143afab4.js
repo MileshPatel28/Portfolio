@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,52683,i=>{"use strict";i.s(["default",()=>s]);var e=i.i(43476);function s(){return(0,e.jsx)("div",{id:"mainPage",children:(0,e.jsx)("div",{id:"mouseDiv",className:"invertDivEffect mouseDivs"})})}}]);
