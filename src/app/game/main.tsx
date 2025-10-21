@@ -295,6 +295,29 @@ export function canvasMain() {
             aboutMeMeshes[4].mesh.position.set(0,-5,26)
             aboutMeMeshes[4].mesh.rotation.set(0,Math.PI/2,0)
 
+            aboutMeMeshes[5].mesh.position.set(0,-8,22)
+            aboutMeMeshes[5].mesh.rotation.set(0,Math.PI/2,0)
+
+            aboutMeMeshes[6].mesh.position.set(0,-11,24)
+            aboutMeMeshes[6].mesh.rotation.set(0,Math.PI/2,0)
+
+            // Start transparency here
+
+            aboutMeMeshes[7].mesh.position.set(0,-4,8)
+            aboutMeMeshes[7].mesh.rotation.set(0,Math.PI/2,0)
+
+            aboutMeMeshes[8].mesh.position.set(0,-7,8)
+            aboutMeMeshes[8].mesh.rotation.set(0,Math.PI/2,0)
+
+            aboutMeMeshes[9].mesh.position.set(0,-10,5)
+            aboutMeMeshes[9].mesh.rotation.set(0,Math.PI/2,0)
+
+            aboutMeMeshes[10].mesh.position.set(0,-5,-8)
+            aboutMeMeshes[10].mesh.rotation.set(0,Math.PI/2,0)
+
+            aboutMeMeshes[11].mesh.position.set(0,-8,-12)
+            aboutMeMeshes[11].mesh.rotation.set(0,Math.PI/2,0)
+
         });
 
         // Load models
@@ -550,13 +573,18 @@ export function canvasMain() {
                 })
             }
 
+            // About me tweens
+            const aboutMePositionZ = gsap.utils.interpolate(
+                [-300, -300, -300, -300, -300, -300, -150, -20, 0, 30, 40, 50, 60, 60, 60, 60, 60, 60, 60, 60], globalScrollPercent
+            )
 
-
+            sceneAboutMe.position.z = aboutMePositionZ;
 
             // const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
             const whoAmIOpacity = gsap.utils.interpolate(
                 [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], globalScrollPercent
             )
+
 
             if (whoAmIMesh) {
                 modifyMaterial(whoAmIMesh.material, (material) => {
