@@ -384,7 +384,13 @@ export function canvasMain() {
             'rgba(113, 136, 140, 1)',
             'rgba(130, 169, 213, 1)',
             'rgba(147, 147, 147, 1)',
-            'rgba(234, 150, 150, 1)',
+            'rgb(92, 60, 60)',
+            'rgb(61, 61, 61)',
+            'rgb(76, 130, 134)',
+            'rgb(56, 56, 56)',
+            'rgb(90, 77, 61)',
+            'rgb(83, 110, 92)',
+            'rgb(49, 49, 49)',
         ]
         
         const listImagePaths = [
@@ -406,6 +412,12 @@ export function canvasMain() {
             'textures/technologiesIcon/python.png',
             'textures/technologiesIcon/unity.png',
             'textures/technologiesIcon/webgl.png',
+            'textures/technologiesIcon/react.png',
+            'textures/technologiesIcon/docker.png',
+            'textures/technologiesIcon/github.png',
+            'textures/technologiesIcon/libGDX.png',
+            'textures/technologiesIcon/android.png',
+            'textures/technologiesIcon/expo.png',
 
         ]
 
@@ -430,6 +442,10 @@ export function canvasMain() {
 
             if(i == 4){
                 imagePlaneGeo = new THREE.PlaneGeometry(5, 5);
+            }
+
+            if(i == 22){
+                imagePlaneGeo = new THREE.PlaneGeometry(2.5,2.5)
             }
 
             const imagePlaneMat = new THREE.MeshStandardMaterial({
