@@ -77,9 +77,11 @@ export function canvasMain() {
 
         const sceneAboutMe = new THREE.Scene();
         const sceneTechnologies = new THREE.Scene();
+        const sceneContactMe = new THREE.Scene();
 
         scene.add(sceneAboutMe)
         scene.add(sceneTechnologies)
+        scene.add(sceneContactMe)
 
 
         let topHeaderText: THREE.Mesh;
@@ -94,6 +96,7 @@ export function canvasMain() {
 
 
         const aboutMeMeshes: {center: THREE.Vector3, mesh: THREE.Mesh}[] = []
+        const contactMeMeshes: {center: THREE.Vector3, mesh: THREE.Mesh}[] = []
         
 
         fontLoader.load('fonts/JetBrainsMonoThin_Regular.json', function (font) {
@@ -314,8 +317,6 @@ export function canvasMain() {
 
             // Technologies text
 
-
-            
            const technologiesTextGeo = new TextGeometry('Technologies', {
                 font: font,
                 size: 3.0,
@@ -349,6 +350,57 @@ export function canvasMain() {
 
             scene.add(technologiesTextMesh)
 
+
+            const contactMeTexts = [
+                "Get in touch!",
+                "milesh.patel28@gmail.com",
+                "514-621-6902",
+                "linkedin.com/in/milesh-patel-82b260385",
+            ]
+
+
+            for(let i = 0; i < contactMeTexts.length; i++){
+                const textString = contactMeTexts[i];
+                
+                const contactMeMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)', transparent: true })
+
+                const contactMeGeo = new TextGeometry(textString, {
+                    font: font,
+                    size: 1.0,
+                    depth: 0,
+                    curveSegments: 12,
+                    bevelEnabled: true,
+                    bevelThickness: 0.01,
+                    bevelSize: 0.005,
+                    bevelOffset: 0,
+                    bevelSegments: 3,
+                });
+
+                contactMeGeo.computeBoundingBox();
+                const contactMeCenter = contactMeGeo.boundingBox?.getCenter(new THREE.Vector3()) ?? new THREE.Vector3()
+                const contactMeMesh = new THREE.Mesh(contactMeGeo,contactMeMat);
+                
+                sceneContactMe.add(contactMeMesh);
+
+                contactMeMeshes.push({
+                    center: contactMeCenter,
+                    mesh: contactMeMesh
+                })
+
+
+            }
+
+            contactMeMeshes[0].mesh.position.set(-5,-5,24);
+            contactMeMeshes[0].mesh.rotation.set(0,-Math.PI/2,0)
+
+            contactMeMeshes[1].mesh.position.set(-5,-8,17);
+            contactMeMeshes[1].mesh.rotation.set(0,-Math.PI/2,0)
+
+            contactMeMeshes[2].mesh.position.set(-5,-10,27);
+            contactMeMeshes[2].mesh.rotation.set(0,-Math.PI/2,0)
+            
+            contactMeMeshes[3].mesh.position.set(-5,-12,5.5);
+            contactMeMeshes[3].mesh.rotation.set(0,-Math.PI/2,0)
 
         });
 
@@ -676,6 +728,18 @@ export function canvasMain() {
                     }
                 })
             }
+
+            const whoAmIOpacity = gsap.utils.interpolate(
+                [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], globalScrollPercent
+            )
+
+
+
+            if (whoAmIMesh) {
+                modifyMaterial(whoAmIMesh.material, (material) => {
+                    material.opacity = whoAmIOpacity;
+                })
+            }
             
 
             // About me
@@ -718,7 +782,7 @@ export function canvasMain() {
 
 
             const technologiesTextOpacity = gsap.utils.interpolate(
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1], globalScrollPercent
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0], globalScrollPercent
             )
 
             modifyMaterial(technologiesTextMesh.material,(material) => {
@@ -729,7 +793,7 @@ export function canvasMain() {
 
 
             const technologiesSceneZ = gsap.utils.interpolate(
-                [-300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -30, 0, 30, 60, 90, 0], globalScrollPercent
+                [-300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -30, 0, 30, 60, 90, 90], globalScrollPercent
             )
 
             sceneTechnologies.position.set(0,0,technologiesSceneZ)
@@ -740,24 +804,34 @@ export function canvasMain() {
 
                     modifyMaterial(child.material, (material) => {
                         material.transparent = true;
-                        material.opacity = (zPosChild + 32)/16;
+                        material.opacity = (zPosChild + 16)/16;
                     })
                 }
             })
 
 
-            // const deltaCamera = Math.min(1, Math.max(0,(smoothScroll.y / (totalScroll * 0.05) - 0.35)))
-            const whoAmIOpacity = gsap.utils.interpolate(
-                [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], globalScrollPercent
+
+            // Contact info
+
+            const contactInfoSceneZ = gsap.utils.interpolate(
+                [-300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, 
+                -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, -300, 0, 0, 0, 0], 
+                globalScrollPercent
             )
 
 
+            sceneContactMe.position.set(0,0,contactInfoSceneZ)
 
-            if (whoAmIMesh) {
-                modifyMaterial(whoAmIMesh.material, (material) => {
-                    material.opacity = whoAmIOpacity;
-                })
-            }
+            sceneContactMe.traverse((child) => {
+                if(child instanceof THREE.Mesh){
+                    const zPosChild = child.position.z + sceneContactMe.position.z;
+
+                    modifyMaterial(child.material, (material) => {
+                        material.transparent = true;
+                        material.opacity = (zPosChild - 4 )/4;
+                    })
+                }
+            })
 
 
 
@@ -852,14 +926,7 @@ export function canvasMain() {
                 }
             }
 
-            // Debug 
-            let numOfMeshes = 0;    
-            scene.traverse( function( child ) {
-                if( child instanceof THREE.Mesh )
-                    numOfMeshes++;
-            } );
 
-            console.log(numOfMeshes)
 
             render();
         }
