@@ -25,12 +25,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Debug remove */
-/* html {
+
+html {
   overflow-y: scroll;
   -ms-overflow-style: none;   
   scrollbar-width: none;      
-} */
+}
 
 
 .invertDivEffect {
