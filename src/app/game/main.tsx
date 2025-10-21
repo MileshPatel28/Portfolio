@@ -100,7 +100,7 @@ export function canvasMain() {
         let lastNameMesh : THREE.Mesh;
 
 
-        let aboutMe1Mesh : THREE.Mesh;
+        const aboutMeMeshes: {center: THREE.Vector3, mesh: THREE.Mesh}[] = []
         
 
         fontLoader.load('fonts/JetBrainsMonoThin_Regular.json', function (font) {
@@ -232,30 +232,68 @@ export function canvasMain() {
 
 
             // About Me meshes
-            const fontAboutMeMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)', transparent: true })
+            const aboutMeTextes = [
+                "19 years old",
+                "Montreal, Québec",
+                "Open Learner",
+                "Coding since a kid",
+                "Computer Enthusiast",
+                "Game Developper",
+                "Mobile App Programmer",
+                "Web Developper",
+                "Video Game Mod Creator",
+                "Intermediate Artist",
+                "Pixel artist",
+                "Intermediate 3D Modeler",
+            ]
 
 
-            const aboutMe1Geo = new TextGeometry('19 years old', {
-                font: font,
-                size: 1.0,
-                depth: 0,
-                curveSegments: 12,
-                bevelEnabled: true,
-                bevelThickness: 0.01,
-                bevelSize: 0.005,
-                bevelOffset: 0,
-                bevelSegments: 3,
-            });
-            aboutMe1Geo.computeBoundingBox()
-            const aboutMe1Center = aboutMe1Geo.boundingBox?.getCenter(new THREE.Vector3())
-            aboutMe1Mesh = new THREE.Mesh(aboutMe1Geo,fontAboutMeMat)
+            for(let i = 0; i < aboutMeTextes.length; i++){
+                const textString = aboutMeTextes[i];
+                
+                const aboutMeMat = new THREE.MeshBasicMaterial({color: 'rgb(255,255,255)', transparent: true })
+
+                const aboutMeGeo = new TextGeometry(textString, {
+                    font: font,
+                    size: 1.0,
+                    depth: 0,
+                    curveSegments: 12,
+                    bevelEnabled: true,
+                    bevelThickness: 0.01,
+                    bevelSize: 0.005,
+                    bevelOffset: 0,
+                    bevelSegments: 3,
+                });
+
+                aboutMeGeo.computeBoundingBox();
+                const aboutMeCenter = aboutMeGeo.boundingBox?.getCenter(new THREE.Vector3()) ?? new THREE.Vector3()
+                const aboutMeMesh = new THREE.Mesh(aboutMeGeo,aboutMeMat);
+                
+                sceneAboutMe.add(aboutMeMesh);
+
+                aboutMeMeshes.push({
+                    center: aboutMeCenter,
+                    mesh: aboutMeMesh
+                })
 
 
-            aboutMe1Mesh.position.set(0,0,32)
-            aboutMe1Mesh.rotation.set(0,Math.PI/2,0)
-            if (aboutMe1Center) aboutMe1Mesh.position.x -= aboutMe1Center.x;
+            }
+            
 
-            sceneAboutMe.add(aboutMe1Mesh)
+            aboutMeMeshes[0].mesh.position.set(0,-4,37)
+            aboutMeMeshes[0].mesh.rotation.set(0,Math.PI/2,0)
+
+            aboutMeMeshes[1].mesh.position.set(0,-7,38)
+            aboutMeMeshes[1].mesh.rotation.set(0,Math.PI/2,0)
+
+            aboutMeMeshes[2].mesh.position.set(0,-10,36)
+            aboutMeMeshes[2].mesh.rotation.set(0,Math.PI/2,0)
+
+            aboutMeMeshes[3].mesh.position.set(0,-13,38)
+            aboutMeMeshes[3].mesh.rotation.set(0,Math.PI/2,0)
+
+            aboutMeMeshes[4].mesh.position.set(0,-5,26)
+            aboutMeMeshes[4].mesh.rotation.set(0,Math.PI/2,0)
 
         });
 
