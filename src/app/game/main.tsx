@@ -1,21 +1,27 @@
 'use client';
-
-import * as THREE from 'three/webgpu';
+import * as THREE from 'three';
 import gsap from 'gsap';
 import { GLTF, GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader, FontLoader } from 'three/examples/jsm/Addons.js';
 import { pass, mrt, output, emissive } from 'three/tsl';
-import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+
+import { firstName, lastName,email,phoneNumber,linkedIn, aboutMeTextes } from '../global';
+
+
 let scene: THREE.Scene
 
-let renderer: THREE.WebGPURenderer
+let renderer: THREE.WebGLRenderer
 let mainCanvas: HTMLCanvasElement;
 let mainPageElement: HTMLDivElement;
 
-let postProcessing: THREE.PostProcessing;
+// let postProcessing: THREE.PostProcessing;
+let composer : EffectComposer;
 
 
 let mouseX = 0;
@@ -59,7 +65,7 @@ export function canvasMain() {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 
 
-        renderer = new THREE.WebGPURenderer({
+        renderer = new THREE.WebGLRenderer({
             canvas: mainCanvas,
             alpha: true,
             antialias: true
@@ -68,6 +74,7 @@ export function canvasMain() {
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 2;
         renderer.setAnimationLoop(animate)
+        renderer.setPixelRatio(window.devicePixelRatio);
 
         scene.background = new THREE.Color('rgb(21,21,21)')
 
@@ -181,7 +188,7 @@ export function canvasMain() {
 
             // Full Name
 
-           const firstNameGeometry = new TextGeometry('Milesh', {
+           const firstNameGeometry = new TextGeometry(firstName, {
                 font: font,
                 size: 1.0,
                 depth: 0,
@@ -204,7 +211,7 @@ export function canvasMain() {
             scene.add(firstNameMesh)
 
 
-           const lastNameGeometry = new TextGeometry('Patel', {
+           const lastNameGeometry = new TextGeometry(lastName, {
                 font: font,
                 size: 1.0,
                 depth: 0,
@@ -228,21 +235,7 @@ export function canvasMain() {
 
 
             // About Me meshes
-            const aboutMeTextes = [
-                "19 years old",
-                "Montreal, Québec",
-                "Open Learner",
-                "Coding since a kid",
-                "Computer Enthusiast",
-                "Game Developper",
-                "Mobile App Programmer",
-                "Web Developper",
-                "Video Game Mod Creator",
-                "Intermediate Artist",
-                "Pixel artist",
-                "Intermediate 3D Modeler",
-            ]
-
+    
 
             for(let i = 0; i < aboutMeTextes.length; i++){
                 const textString = aboutMeTextes[i];
@@ -353,9 +346,9 @@ export function canvasMain() {
 
             const contactMeTexts = [
                 "Get in touch!",
-                "milesh.patel28@gmail.com",
-                "514-621-6902",
-                "linkedin.com/in/milesh-patel-82b260385",
+                email,
+                phoneNumber,
+                linkedIn,
             ]
 
 
@@ -571,10 +564,16 @@ export function canvasMain() {
 
         const outputPass = scenePass.getTextureNode();
         const emissivePass = scenePass.getTextureNode('emissive');
-        const bloomPass = bloom(emissivePass, 0.15, .5);
-        postProcessing = new THREE.PostProcessing(renderer);
-        postProcessing.outputNode = outputPass.add(bloomPass);
-
+        // bloom
+        const bloomPass =  new UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            0.5, 
+            0.5,  
+            0  
+        );
+        composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        composer.addPass(bloomPass)
 
         mainCanvas.style.opacity = '0';
         gsap.to(mainCanvas, {
@@ -680,23 +679,24 @@ export function canvasMain() {
             }
 
 
-            if (globalScrollPercent >= 1 / 10) {
-                modelDBUp.scene.visible = false;
-                modelDBDown.scene.visible = false;
+            if(modelDBDown && modelDBUp){
+                if (globalScrollPercent >= 1 / 10) {
+                    modelDBUp.scene.visible = false;
+                    modelDBDown.scene.visible = false;
 
-                topHeaderText.visible = false;
-                bottomHeaderText.visible = false;
+                    topHeaderText.visible = false;
+                    bottomHeaderText.visible = false;
 
 
+                }
+                else {
+                    modelDBUp.scene.visible = true;
+                    modelDBDown.scene.visible = true;
+
+                    topHeaderText.visible = true;
+                    bottomHeaderText.visible = true;
+                }
             }
-            else {
-                modelDBUp.scene.visible = true;
-                modelDBDown.scene.visible = true;
-
-                topHeaderText.visible = true;
-                bottomHeaderText.visible = true;
-            }
-
 
             // Blackhole Logic
 
@@ -770,10 +770,12 @@ export function canvasMain() {
             sceneAboutMe.traverse((child) => {
                 if(child instanceof THREE.Mesh){
                     const zPosChild = child.position.z + sceneAboutMe.position.z;
+                    const raw = (zPosChild - 4)/16
+                    const opacity = THREE.MathUtils.clamp((zPosChild - 4)/16,0,1)
 
                     modifyMaterial(child.material, (material) => {
                         material.transparent = true;
-                        material.opacity = (zPosChild - 4)/16;
+                        material.opacity = opacity;
                     })
                 }
             })
@@ -785,11 +787,12 @@ export function canvasMain() {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0], globalScrollPercent
             )
 
-            modifyMaterial(technologiesTextMesh.material,(material) => {
-                material.transparent = true;
-                material.opacity = technologiesTextOpacity;
-            })
-
+            if(technologiesTextMesh){
+                modifyMaterial(technologiesTextMesh.material,(material) => {
+                    material.transparent = true;
+                    material.opacity = technologiesTextOpacity;
+                })
+            }
 
 
             const technologiesSceneZ = gsap.utils.interpolate(
@@ -798,13 +801,21 @@ export function canvasMain() {
 
             sceneTechnologies.position.set(0,0,technologiesSceneZ)
 
+
+
             sceneTechnologies.traverse((child) => {
+                
                 if(child instanceof THREE.Mesh){
                     const zPosChild = child.position.z + sceneTechnologies.position.z;
 
+                    const raw = (zPosChild + 16) / 16;
+                    console.log(raw);
+                    const opacity = THREE.MathUtils.clamp(raw,0,1000)
+                    
+
                     modifyMaterial(child.material, (material) => {
                         material.transparent = true;
-                        material.opacity = (zPosChild + 16)/16;
+                        material.opacity = opacity;
                     })
                 }
             })
@@ -826,9 +837,15 @@ export function canvasMain() {
                 if(child instanceof THREE.Mesh){
                     const zPosChild = child.position.z + sceneContactMe.position.z;
 
+                    const raw = (zPosChild - 4 )/4;
+                    const opacity = THREE.MathUtils.clamp((zPosChild - 4 )/4,0,1)
+
+                    console.log((zPosChild - 4 )/4)
+
+
                     modifyMaterial(child.material, (material) => {
                         material.transparent = true;
-                        material.opacity = (zPosChild - 4 )/4;
+                        material.opacity = opacity;
                     })
                 }
             })
@@ -933,7 +950,7 @@ export function canvasMain() {
 
         function render() {
             cubeCamera.update(renderer, scene);
-            postProcessing.render();
+            composer.render();
         }
 
         addEventListener('resize', onResize)
